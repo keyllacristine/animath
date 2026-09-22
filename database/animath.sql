@@ -22,7 +22,7 @@ CREATE TABLE user_progress (
     level_id INT NOT NULL,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
     hits INT NOT NULL DEFAULT 0,
-    errors INT NOT NULL DEFAULT 0,
+    erros INT NOT NULL DEFAULT 0,
 
     UNIQUE (user_id, level_id),
 
@@ -40,3 +40,5 @@ INSERT INTO levels (id) VALUES
 (2),
 (3),
 (4);
+
+select * from users;

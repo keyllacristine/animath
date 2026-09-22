@@ -68,4 +68,13 @@ class ProgressController
             exit('Acesso negado.');
         }
     }
+
+    public function findAll()
+{
+    $stmt = $this->db->query(
+        "SELECT * FROM user_progress ORDER BY id"
+    );
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

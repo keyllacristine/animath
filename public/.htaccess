@@ -1,9 +1,10 @@
-RewriteEngine On
+DirectoryIndex index.php
 
-# Se o arquivo ou pasta existir, não redireciona
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# Todo o resto vai para o index.php
-RewriteRule ^ index.php [L]
+    # Se o ficheiro ou pasta não existir em public/, envia para o index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
