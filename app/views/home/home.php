@@ -20,7 +20,9 @@ $bgImage = $isLoggedIn
     <?php if ($isLoggedIn): ?>
         <nav>
             <div>
-                <a href="<?= BASE_URL ?>/settings">configuraçoes</a>
+                <a href="<?= BASE_URL ?>/settings">
+                <button type="button">Configuraçoes</button>
+                </a>
             </div>
 
             <br>

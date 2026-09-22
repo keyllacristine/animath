@@ -1,4 +1,66 @@
+:root {
+  --purple-dark: #4A154B;      
+  --purple-sub: #8B6B9B;       
+
+  --light-green: #E2FCDA;     
+  --light-purple: #F0DAFB;  
+  --light-cyan: #B7F9F7;
+  --light-orange: #FFE5B4;      
+  --light-beige: #FFFDF8;          
+
+  --bg-main: #fffdfa;           
+}
+
 *{  
     margin: 0;
     padding: 0;
+    color: var(--purple-dark);
+    font-family: 'Fredoka', monospace;
+}
+
+body{
+    background-color: var(--bg-main);
+}
+
+button{
+    border: 3px solid var(--purple-dark);
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+fieldset{
+    border: 3px solid var(--purple-dark);
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: var(--light-beige);
+    padding: 20px;
+}
+
+input{
+    border: 3px solid var(--purple-dark);
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: var(--light-beige);
+    font-family: 'Fredoka', monospace;
+}
+
+.container.login{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+.form.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 50px;
 }
