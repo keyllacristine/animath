@@ -9,16 +9,18 @@ $bgImage = $isLoggedIn
         body {
             /* Aplica o background dinâmico */
             background-image: url('<?= $bgImage ?>');
+            background-size: cover;
             background-repeat: no-repeat;
-            background-position: <?= $isLoggedIn ? 'right center' : 'bottom center' ?>;
-        }
+            background-position: center center;
+            background-attachment: fixed;
+            }
 </style>
     <h1>AniMath</h1>
 
     <?php if ($isLoggedIn): ?>
         <nav>
             <div>
-                <a href="<?= BASE_URL ?>/settings"></a>
+                <a href="<?= BASE_URL ?>/settings">configuraçoes</a>
             </div>
 
             <br>

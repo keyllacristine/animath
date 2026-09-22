@@ -26,7 +26,7 @@
         <br>
 
         <div>
-            <img src="<?= BASE_URL ?>/assets/images/bichinhos-login.png" alt="Ilustração dos bichinhos do Animath" width="300">
+            <img src="<?= BASE_URL ?>/assets/img/login.png" alt="Ilustração dos bichinhos do Animath" width="300">
         </div>
 
         <br>

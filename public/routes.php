@@ -38,9 +38,20 @@ switch (true) {
     // HOME
 
     case $path === '/home':
-    include __DIR__ . '/../app/views/home/home.php';
-    break;
+        include __DIR__ . '/../app/views/home/home.php';
+        break;
 
+    // CONFIGURAÇOES
+
+    case $path === '/settings':
+        require_once __DIR__ . '/../app/views/settings/index.php';
+        break;
+
+    // DESENVOLVEDORES
+
+    case $path === '/developers':
+        require_once __DIR__ . '/../app/views/settings/developers.php';
+        break;
 
     // GAME
 
