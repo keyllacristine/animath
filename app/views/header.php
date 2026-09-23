@@ -10,5 +10,4 @@
     <title>Animath</title>
 </head>
 <body>
-<div class="container">
 

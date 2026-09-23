@@ -7,21 +7,22 @@ $bgImage = $isLoggedIn
 ?>
 <style>
         body {
-            /* Aplica o background dinâmico */
             background-image: url('<?= $bgImage ?>');
-            background-size: cover;
+            background-size: 100%;
             background-repeat: no-repeat;
             background-position: center center;
             background-attachment: fixed;
             }
 </style>
-    <h1>AniMath</h1>
 
     <?php if ($isLoggedIn): ?>
-        <nav>
+    <div class="container logado">
+    <h1>AniMath</h1>
+
+        <nav class="nav logado">
             <div>
                 <a href="<?= BASE_URL ?>/settings">
-                <button type="button">Configuraçoes</button>
+                <button type="button">Configuraçõees</button>
                 </a>
             </div>
 
@@ -57,12 +58,15 @@ $bgImage = $isLoggedIn
                 </a>
             </div>
         </nav>
+    </div>
 
     <?php else: ?>
-        <nav>
+    <div class="container nao-logado">
+    <h1>AniMath</h1>
+        <nav class="nav nao-logado">
             <div>
                 <a href="<?= BASE_URL ?>/register">
-                    <button type="button">Vamos aprender!</button>
+                    <button type="button" class="btn lets-learn">Vamos aprender!</button>
                 </a>
             </div>
             <div>
@@ -71,6 +75,6 @@ $bgImage = $isLoggedIn
                 </a>
             </div>
         </nav>
-
+    </div>
     <?php endif; ?>
 <?php include __DIR__ . '/../footer.php'; ?>
