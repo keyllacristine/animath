@@ -25,33 +25,21 @@ $bgImage = $isLoggedIn
                 <button type="button">Configuraçõees</button>
                 </a>
             </div>
-
-            <br>
-
             <div>
                 <a href="<?= BASE_URL ?>/game">
                     <button type="button">Jogar</button>
                 </a>
             </div>
-
-            <br>
-
             <div>
                 <a href="<?= BASE_URL ?>/profile">
                     <button type="button">Meu perfil</button>
                 </a>
             </div>
-
-            <br>
-
             <div>
                 <a href="<?= BASE_URL ?>/game/infinite">
                     <button type="button">Modo infinito</button>
                 </a>
             </div>
-
-            <br>
-
             <div>
                 <a href="<?= BASE_URL ?>/logout">
                     <button type="button">Sair</button>

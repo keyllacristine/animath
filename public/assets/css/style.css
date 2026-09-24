@@ -76,6 +76,11 @@ input{
     align-items: center;
 }
 
+.container.logado{
+    flex-direction: column;
+    align-items: center;
+}
+
 .nav.nao-logado{
     display: flex;
     flex-direction: column;
@@ -87,15 +92,37 @@ input{
     gap: 20px;
 }
 
-.nav.logado{
-    width: 50%;
-    height: fit-content;
-    padding: 20px;
+.nav.logado {
+    width: 25%;
+    gap: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: left;
+    margin: 30px;
 }
+
+.nav.logado a {
+    width: 100%;
+    display: block;
+    text-decoration: none;
+}
+
+.nav.logado button {
+    width: 100%;
+    text-align: center;
+}
+.container.profile{
+    display: flex;
+    flex-direction: row;
+    margin: 40px;
+    justify-content: space-evenly;
+}
+
+section.profile{
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+}
+
 
 /* FORMULÁRIO DE LOGIN*/
 

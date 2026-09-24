@@ -1,4 +1,5 @@
-    <div>
+<?php include __DIR__ . '/../header.php'; ?>
+<div>
         <a href="<?= BASE_URL ?>/home">
             <button type="button">&hookleftarrow; Voltar</button>
         </a>
