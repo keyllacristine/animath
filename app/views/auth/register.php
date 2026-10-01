@@ -16,14 +16,27 @@
     <div class="form register">
         <fieldset class="choose-avatar">
             <legend>escolha um avatar</legend>
-            <label>
-                <input type="radio" name="avatar" value="1" checked>
-                <img src="<?= BASE_URL ?>/assets/img/av1.png" alt="Avatar Coelho Coelho com Ursinho" width="100">
-            </label>
-            <label>
-                <input type="radio" name="avatar" value="2">
-                <img src="<?= BASE_URL ?>/assets/img/av2.png" alt="Avatar Coelho com Laço" width="115">
-            </label>
+            <div class="avatar-selection">
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="1" <?= (($userData['avatar'] ?? 1) == 1) ? 'checked' : '' ?>>
+                        <div class="avatar-card">
+                            <img src="<?= BASE_URL ?>/assets/img/av1.png" alt="Avatar Coelho com Ursinho">
+                            <div class="overlay">
+                                <span class="checkmark"><i class="bi bi-check-lg"></i></span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="2" <?= (($userData['avatar'] ?? 1) == 2) ? 'checked' : '' ?>>
+                        <div class="avatar-card">
+                            <img src="<?= BASE_URL ?>/assets/img/av2.png" alt="Avatar Coelho com Laço">
+                            <div class="overlay">
+                                <span class="checkmark"><i class="bi bi-check-lg"></i></span>
+                            </div>
+                        </div>
+                    </label>
+                </div>
         </fieldset>
         <button type="submit" class="btn lets-learn">Vamos aprender! &rarr;</button>
     </div>
