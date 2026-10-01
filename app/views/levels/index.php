@@ -10,7 +10,7 @@
         <h1 class="page-title">Níveis</h1>
         
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
-            <span class="icon-gear">⚙</span>
+            <i class="bi bi-gear-fill"></i>
         </a>
     </div>
 

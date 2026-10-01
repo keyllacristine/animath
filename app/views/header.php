@@ -10,5 +10,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Animath</title>
 </head>
+<script src="<?= BASE_URL ?>/assets/js/audio-manager.js"></script>
 <body>
 

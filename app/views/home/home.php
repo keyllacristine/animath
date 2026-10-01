@@ -27,17 +27,17 @@ $bgImage = $isLoggedIn
         <nav class="nav logado">
             <div>
                 <a href="<?= BASE_URL ?>/levels">
-                    <button type="button">Jogar <i class="bi bi-play-fill"></i></button>
+                    <button type="button" onclick="soundManager.playClickSound()">Jogar <i class="bi bi-play-fill"></i></button>
                 </a>
             </div>
              <div>
                 <a href="<?= BASE_URL ?>/game/infinite">
-                    <button type="button">Modo infinito <i class="bi bi-infinity"></i></button>
+                    <button type="button" onclick="soundManager.playClickSound()">Modo infinito <i class="bi bi-infinity"></i></button>
                 </a>
             </div>
             <div>
                 <a href="<?= BASE_URL ?>/profile">
-                    <button type="button">Meu perfil <i class="bi bi-person-fill"></i></button>
+                    <button type="button" onclick="soundManager.playClickSound()">Meu perfil <i class="bi bi-person-fill"></i></button>
                 </a>
             </div>
         </nav>
