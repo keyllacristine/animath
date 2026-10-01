@@ -17,11 +17,16 @@ $bgImage = $isLoggedIn
 
 <?php if ($isLoggedIn): ?>
 <div class="container logado">
-    <div class="sidebar-logado">
+    <header class="header-logado">
         <h1>AniMath</h1>
+        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
+            <span class="icon-gear"><i class="bi bi-gear-fill"></i></span>
+        </a>
+    </header>
+    <div class="sidebar-logado">
         <nav class="nav logado">
             <div>
-                <a href="<?= BASE_URL ?>/game">
+                <a href="<?= BASE_URL ?>/levels">
                     <button type="button">Jogar <i class="bi bi-play-fill"></i></button>
                 </a>
             </div>
@@ -33,17 +38,6 @@ $bgImage = $isLoggedIn
             <div>
                 <a href="<?= BASE_URL ?>/profile">
                     <button type="button">Meu perfil <i class="bi bi-person-fill"></i></button>
-                </a>
-            </div>
-           
-            <div>
-                <a href="<?= BASE_URL ?>/settings">
-                    <button type="button">Configurações <i class="bi bi-gear-fill"></i></button>
-                </a>
-            </div>
-            <div>
-                <a href="<?= BASE_URL ?>/logout">
-                    <button type="button">Sair <i class="bi bi-box-arrow-right"></i></button>
                 </a>
             </div>
         </nav>

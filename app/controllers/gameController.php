@@ -24,7 +24,7 @@ class GameController
             exit('Nível não encontrado.');
         }
 
-        require '../app/views/game/game.php';
+        require '../app/views/game/levels.php';
     }
 
     public function complete()

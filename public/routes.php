@@ -63,6 +63,9 @@ switch (true) {
         (new GameController($db))->complete();
         break;
 
+    case $path === '/levels':
+        (new LevelController($db))->index();
+        break;
 
     // ADMIN
 

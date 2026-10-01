@@ -1,61 +1,37 @@
 <?php include __DIR__ . '/../header.php'; ?>
-    <div>
-        <a href="<?= BASE_URL ?>/settings">
-            <button type="button">&hookleftarrow; Voltar</button>
+
+<main class="developers-page">
+    <!-- Botão Voltar -->
+    <div class="top-bar">
+        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-back" title="Voltar">
+            <span class="icon-back">↩</span>
         </a>
     </div>
 
-    <br>
+    <?php 
+    // Array com a lista de desenvolvedores
+    $developers = [
+        ['img' => 'dev1.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev2.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev3.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev4.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev5.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev6.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+    ];
+    ?>
 
-    <main>
-        <section>
-            
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev1.png" alt="Foto Dev 1" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
+    <!-- Grid de Desenvolvedores (3 colunas x 2 linhas) -->
+    <div class="devs-grid">
+        <?php foreach ($developers as $dev): ?>
+            <article class="dev-card">
+                <div class="dev-avatar">
+                    <img src="<?= BASE_URL ?>/assets/images/<?= htmlspecialchars($dev['img']) ?>" alt="<?= htmlspecialchars($dev['name']) ?>">
+                </div>
+                <h3 class="dev-name"><?= htmlspecialchars($dev['name']) ?></h3>
+                <p class="dev-role"><?= nl2br(htmlspecialchars($dev['role'])) ?></p>
             </article>
+        <?php endforeach; ?>
+    </div>
+</main>
 
-            <br>
-
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev2.png" alt="Foto Dev 2" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
-            </article>
-
-            <br>
-
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev3.png" alt="Foto Dev 3" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
-            </article>
-
-            <br>
-
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev4.png" alt="Foto Dev 4" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
-            </article>
-
-            <br>
-
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev5.png" alt="Foto Dev 5" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
-            </article>
-
-            <br>
-
-            <article>
-                <img src="<?= BASE_URL ?>/assets/images/dev6.png" alt="Foto Dev 6" width="100" height="100">
-                <h3>nome</h3>
-                <p>papel no desenvolvimento</p>
-            </article>
-
-        </section>
-    </main>
 <?php include __DIR__ . '/../footer.php'; ?>
