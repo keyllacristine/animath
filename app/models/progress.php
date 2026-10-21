@@ -12,7 +12,7 @@ class Progress
     public function findById(int $id): ?array
     {
         $sql = "
-            SELECT *
+            SELECT user_progress.*, user_progress.erros AS errors
             FROM user_progress
             WHERE id = :id
         ";
@@ -30,6 +30,7 @@ class Progress
         $sql = "
             SELECT
                 up.*,
+                up.erros AS errors,
                 l.id AS level_id
             FROM user_progress up
             INNER JOIN levels l
@@ -49,6 +50,7 @@ class Progress
         $sql = "
             SELECT
                 up.*,
+                up.erros AS errors,
                 u.username,
                 l.id AS level_id
             FROM user_progress up
@@ -64,6 +66,33 @@ class Progress
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * NOVO — chamado pelo GameController::complete() ao terminar o quiz.
+     * Cria o progresso do nível ou atualiza se já existir (UNIQUE user_id + level_id):
+     *  - marca o nível como concluído (nunca volta atrás);
+     *  - ACUMULA acertos e erros, igual ao total mostrado no perfil.
+     */
+    public function save(int $userId, int $levelId, int $hits, int $errors): bool
+    {
+        $sql = "
+            INSERT INTO user_progress (user_id, level_id, completed, hits, erros)
+            VALUES (:user_id, :level_id, 1, :hits, :errors)
+            ON DUPLICATE KEY UPDATE
+                completed = 1,
+                hits = hits + VALUES(hits),
+                erros = erros + VALUES(erros)
+        ";
+
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute([
+            ':user_id'  => $userId,
+            ':level_id' => $levelId,
+            ':hits'     => $hits,
+            ':errors'   => $errors,
+        ]);
+    }
+
     public function update(
         int $id,
         int $completed,
@@ -74,7 +103,7 @@ class Progress
             UPDATE user_progress
             SET completed = :completed,
                 hits = :hits,
-                errors = :errors
+                erros = :errors
             WHERE id = :id
         ";
 

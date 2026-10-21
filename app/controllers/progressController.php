@@ -72,7 +72,7 @@ class ProgressController
     public function findAll()
 {
     $stmt = $this->db->query(
-        "SELECT * FROM user_progress ORDER BY id"
+        "SELECT user_progress.*, user_progress.erros AS errors FROM user_progress ORDER BY id"
     );
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -1,0 +1,180 @@
+/* /public/assets/css/vn-quiz.css
+   Visual do quiz (protótipo): card creme, 4 opções em grade 2x2,
+   mascote com balão de fala. Tudo em cqw, então escala com a tela 16:9.
+   O style.css tem regras globais (* { font-size; color }, button { border: 6px }),
+   por isso o tamanho de fonte é definido explicitamente. */
+
+/* Durante o quiz some a caixa de diálogo e os personagens da VN; o fundo fica. */
+
+:root {
+  --purple-dark: #4A154B;      
+  --purple-sub: #8B6B9B;       
+
+  --light-green: #E2FCDA;     
+  --light-purple: #F0DAFB;  
+  --light-cyan: #B7F9F7;
+  --light-orange: #FFE5B4;      
+  --light-beige: #f8f3ee;          
+
+  --bg-main: #fffdfa;           
+}
+
+.vn-quiz-mode { cursor: default; }
+.vn-quiz-mode .vn-dialog,
+.vn-quiz-mode .vn-chars { display: none; }
+
+.vq-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* película que escurece a tela quando o mascote fala */
+.vq-shade {
+    position: absolute;
+    inset: 0;
+    background: rgba(74, 21, 75, .16);
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+}
+.vq-layer.feedback .vq-shade { opacity: 1; }
+
+/* ---------- botão voltar ---------- */
+.vq-back {
+    position: absolute;
+    top: 1.4cqw;
+    left: 1.4cqw;
+    width: 7.6cqw;
+    height: 7.6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: var(--bg-main, #fffdfa);
+    border: .55cqw solid var(--purple-dark, #4A154B);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+}
+.vq-back i { font-size: 4cqw; color: var(--purple-dark, #4A154B); }
+.vq-back:hover { filter: brightness(.96); }
+
+/* ---------- card ---------- */
+.vq-card {
+    position: relative;
+    box-sizing: border-box;
+    width: 45.7cqw;
+    padding: 3.2cqw 3.4cqw 3.8cqw;
+    background: var(--bg-main, #fffdfa);
+    border: .6cqw solid var(--purple-dark, #4A154B);
+    border-radius: 3cqw;
+    text-align: center;
+    transition: filter .25s ease;
+}
+.vq-layer.feedback .vq-card { filter: brightness(.88) saturate(.75); }
+
+.vq-card * { font-size: inherit; font-family: inherit; color: var(--purple-dark, #4A154B); }
+
+.vq-question {
+    font-size: 6.2cqw;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 2.6cqw;
+}
+
+.vq-options {
+    display: grid;
+    grid-template-columns: repeat(2, 13.8cqw);
+    justify-content: center;
+    gap: 2.6cqw 3.2cqw;
+}
+
+.vq-opt {
+    width: 13.8cqw;
+    height: 13.1cqw;
+    padding: 0;
+    box-sizing: border-box;
+    border: .55cqw solid var(--purple-dark, #4A154B);
+    border-radius: 2.6cqw;
+    background: var(--light-beige, #f8f3ee);
+    font-size: 3.6cqw;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .1s ease, background-color .15s ease;
+}
+.vq-opt:hover:not(:disabled) { transform: scale(1.05); }
+.vq-opt:disabled { cursor: default; transform: none; }
+.vq-opt.right { background: var(--light-green, #E2FCDA); }
+.vq-opt.wrong { background: #ffd6d6; }
+
+/* ---------- tela de conclusão (dentro do mesmo card) ---------- */
+.vq-title { font-size: 4.6cqw; font-weight: 700; margin-bottom: 2.2cqw; }
+.vq-stats { display: flex; justify-content: center; gap: 2.4cqw; margin-bottom: 2cqw; }
+.vq-stat {
+    padding: 1.2cqw 2.4cqw;
+    border: .5cqw solid var(--purple-dark, #4A154B);
+    border-radius: 2.4cqw;
+    font-size: 2.8cqw;
+    font-weight: 600;
+}
+.vq-stat.hits { background: var(--light-green, #E2FCDA); }
+.vq-stat.errors { background: #ffd6d6; }
+.vq-status { font-size: 2.2cqw; min-height: 3cqw; margin-bottom: 1.8cqw; }
+.vq-card .vq-status { color: var(--purple-sub, #8B6B9B); }
+.vq-opt.vq-go {
+    width: auto;
+    height: auto;
+    padding: 1.4cqw 3.4cqw;
+    font-size: 3cqw;
+    background: var(--light-cyan, #B7F9F7);
+}
+
+/* ---------- mascote + balão ---------- */
+.vq-mascot {
+    position: absolute;
+    right: 1.5cqw;
+    bottom: 0;
+    width: 26cqw;
+    height: 44%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    transform: translateY(105%);
+    transition: transform .25s ease;
+    pointer-events: none;
+}
+.vq-layer.feedback .vq-mascot { transform: none; }
+.vq-mascot img { height: 100%; width: auto; display: block; }
+
+.vq-bubble {
+    position: absolute;
+    right: 3cqw;
+    bottom: calc(100% + 1.4cqw);
+    min-width: 27cqw;
+    box-sizing: border-box;
+    padding: 2.4cqw;
+    background: var(--bg-main, #fffdfa);
+    border: .6cqw solid var(--purple-dark, #4A154B);
+    border-radius: 3.4cqw;
+    text-align: center;
+    font-size: 3.2cqw;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: pre-line;
+    color: var(--purple-dark, #4A154B);
+}
+.vq-bubble::after {          /* rabinho do balão */
+    content: '';
+    position: absolute;
+    right: 6cqw;
+    bottom: -1.6cqw;
+    width: 2.4cqw;
+    height: 2.4cqw;
+    background: var(--bg-main, #fffdfa);
+    border-right: .6cqw solid var(--purple-dark, #4A154B);
+    border-bottom: .6cqw solid var(--purple-dark, #4A154B);
+    transform: rotate(45deg);
+}

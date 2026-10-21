@@ -1,0 +1,183 @@
+/* /public/assets/css/vn.css
+   Usa as variáveis do style.css (--purple-dark, --light-beige, ...).
+   Atenção: o style.css tem regras globais (* { font-size; color } e button { border: 6px }),
+   por isso tudo aqui define font-size/color explicitamente nos elementos. */
+
+.vn-root[hidden], .vn-editor[hidden], .vn-fab[hidden], .vn-name[hidden] { display: none !important; }
+
+/* ---------- tela ---------- */
+.vn-root {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    background: #1b0a1c;
+}
+.vn-root.vn-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, .75);
+}
+body.vn-editing .vn-root { padding-right: 400px; }
+
+.vn-stage {
+    position: relative;
+    width: min(100%, calc(100vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    container-type: inline-size;   /* permite usar cqw: tudo escala com o tamanho da cena */
+    overflow: hidden;
+    background: var(--light-beige, #f8f3ee);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ---------- fundos (2 camadas p/ fade) ---------- */
+.vn-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity .45s ease;
+}
+.vn-bg.on { opacity: 1; }
+
+/* ---------- personagens ---------- */
+.vn-chars { position: absolute; inset: 0; pointer-events: none; }
+.vn-char {
+    position: absolute;
+    bottom: 0;
+    height: 88%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity .3s ease, left .35s ease;
+}
+.vn-char.vn-visible { opacity: 1; }
+.vn-char img { height: 100%; width: auto; display: block; }
+.vn-char[data-pos="left"]   { left: 22%; }
+.vn-char[data-pos="center"] { left: 50%; }
+.vn-char[data-pos="right"]  { left: 78%; }
+
+/* ---------- caixa de diálogo (div pura) ---------- */
+.vn-dialog {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: 4%;
+    min-height: 24%;
+    box-sizing: border-box;
+    padding: 3.2cqw 3cqw 2.4cqw;
+    background: var(--light-beige, #f8f3ee);
+    border: .7cqw solid var(--purple-dark, #4A154B);
+    border-radius: 2.2cqw;
+    box-shadow: 0 .6cqw 0 rgba(74, 21, 75, .25);
+}
+.vn-name {
+    position: absolute;
+    top: -3.2cqw;
+    left: 2.5cqw;
+    padding: .5cqw 2cqw;
+    background: var(--light-cyan, #B7F9F7);
+    border: .6cqw solid var(--purple-dark, #4A154B);
+    border-radius: 1.6cqw;
+    font-size: 2.3cqw;
+    font-weight: 600;
+    color: var(--purple-dark, #4A154B);
+}
+.vn-text {
+    font-size: 2.5cqw;
+    line-height: 1.35;
+    color: var(--purple-dark, #4A154B);
+    white-space: pre-wrap;
+}
+.vn-next {
+    position: absolute;
+    right: 2cqw;
+    bottom: 1cqw;
+    font-size: 2.2cqw;
+    color: var(--purple-sub, #8B6B9B);
+    opacity: 0;
+}
+.vn-next.on { opacity: 1; animation: vn-bounce 1s infinite; }
+@keyframes vn-bounce { 50% { transform: translateY(.5cqw); } }
+
+/* ---------- botões (anulam o button{} global do style.css) ---------- */
+.vn-btn {
+    border: 3px solid var(--purple-dark, #4A154B);
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: var(--light-beige, #f8f3ee);
+    color: var(--purple-dark, #4A154B);
+    width: auto;
+    cursor: pointer;
+}
+.vn-btn:hover { transform: none; filter: brightness(.96); }
+.vn-btn-main { background: var(--light-green, #E2FCDA); }
+.vn-mini { padding: 2px 8px; border-width: 2px; border-radius: 8px; }
+
+.vn-fab { position: fixed; right: 16px; bottom: 16px; z-index: 10001; }
+
+/* ---------- painel do editor ---------- */
+.vn-editor {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 380px;
+    z-index: 10000;
+    box-sizing: border-box;
+    padding: 12px;
+    overflow-y: auto;
+    background: var(--bg-main, #fffdfa);
+    border-left: 4px solid var(--purple-dark, #4A154B);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.vn-editor, .vn-editor * { font-size: 1rem; }
+.vn-ed-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.vn-ed-head > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vn-status { font-size: .85rem; color: var(--purple-sub, #8B6B9B); min-height: 1.2em; }
+.vn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.vn-row .vn-in { flex: 1; min-width: 0; }
+
+.vn-editor input.vn-in,
+.vn-editor select.vn-in,
+.vn-editor textarea.vn-in {
+    box-sizing: border-box;
+    border: 2px solid var(--purple-dark, #4A154B);
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-weight: 400;
+    background: #fff;
+    width: 100%;
+    font-family: inherit;
+}
+
+.vn-list { display: flex; flex-direction: column; gap: 8px; }
+.vn-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 3px solid var(--light-purple, #F0DAFB);
+    border-radius: 14px;
+    background: var(--light-beige, #f8f3ee);
+}
+.vn-card.active { border-color: var(--purple-dark, #4A154B); }
+.vn-card-head { display: flex; gap: 4px; align-items: center; }
+.vn-card-head b { flex: 1; }
+.vn-card summary { cursor: pointer; font-weight: 600; }
+.vn-lbl { display: block; margin: 6px 0 2px; font-size: .85rem; }
+.vn-charrow { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--purple-sub, #8B6B9B); }
+.vn-charrow .vn-mini { grid-column: span 2; }
+
+@media (max-width: 900px) {
+    body.vn-editing .vn-root { padding-right: 0; }
+    .vn-editor { width: 100%; top: auto; height: 55vh; border-left: 0; border-top: 4px solid var(--purple-dark, #4A154B); }
+}

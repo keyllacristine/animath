@@ -137,6 +137,22 @@ switch (true) {
         (new ProgressController($db))->delete();
         break;
 
+    // VISUAL NOVEL
+    case $path === '/vn/scene':
+        (new VnController($db))->scene();
+        break;
+
+    case $path === '/vn/save' && $method === 'POST':
+        (new VnController($db))->save();
+        break;
+
+    case $path === '/vn/assets':
+        (new VnController($db))->assets();
+        break;
+
+    case $path === '/vn/upload' && $method === 'POST':
+        (new VnController($db))->upload();
+        break;
 
     default:
     include __DIR__ . '/../app/views/home/home.php';

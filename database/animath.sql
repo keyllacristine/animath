@@ -1,3 +1,4 @@
+drop database if exists animath;
 CREATE DATABASE animath
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
@@ -42,3 +43,5 @@ INSERT INTO levels (id) VALUES
 (4);
 
 select * from users;
+
+update users set role = "admin" where id = 1;
