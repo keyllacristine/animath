@@ -178,3 +178,20 @@
     border-bottom: .6cqw solid var(--purple-dark, #4A154B);
     transform: rotate(45deg);
 }
+
+/* ---------- botões da conclusão (próximo nível / voltar) ---------- */
+.vq-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2cqw;
+    flex-wrap: wrap;
+}
+
+/* ---------- mensagem final ---------- */
+.vq-end { width: 52cqw; }
+.vq-text {
+    font-size: 2.8cqw;
+    line-height: 1.3;
+    white-space: pre-line;
+    margin-bottom: 2.4cqw;
+}

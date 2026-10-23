@@ -63,6 +63,10 @@ switch (true) {
         (new GameController($db))->complete();
         break;
 
+    case $path === '/game/infinite':
+        (new GameController($db))->infinite();
+        break;
+
     case $path === '/levels':
         (new LevelController($db))->index();
         break;

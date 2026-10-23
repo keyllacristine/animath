@@ -1,5 +1,13 @@
 <?php include_once __DIR__ . '/../header.php'?>
 <div class="container register">
+     <div class="login-header">
+        <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
+            <i class="bi bi-reply-fill"></i>
+        </a>        
+        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
+            <i class="bi bi-gear-fill"></i>
+        </a>
+    </div>
 <form action="<?= BASE_URL ?>/register" method="POST" class="register">
     <div class="form register">
         <fieldset class="register">

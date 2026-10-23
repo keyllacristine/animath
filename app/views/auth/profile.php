@@ -3,7 +3,7 @@
 <main class="profile-page">
     <div class="top-bar">
         <a href="<?= BASE_URL ?>/home" class="btn-back">
-            <span class="icon-back">↩</span>
+            <i class="bi bi-reply-fill"></i>
         </a>
     </div>
 

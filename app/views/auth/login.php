@@ -3,6 +3,14 @@
         <p style="color: red;"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
     <div class="container login">
+    <div class="login-header">
+        <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
+            <i class="bi bi-reply-fill"></i>
+        </a>        
+        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
+            <i class="bi bi-gear-fill"></i>
+        </a>
+    </div>
         <form action="<?= BASE_URL ?>/login" method="POST" class="login">
         <div class="form login">
             <fieldset class="login">

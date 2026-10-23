@@ -12,6 +12,13 @@
 //   chars    – (opcional) comandos de personagens:
 //              [{ id:"mel", src:"av1.png", pos:"left|center|right", show:true|false }]
 //              campos vazios/ausentes = mantém o que já estava
+//   part     – (opcional) 2 = esta fala começa a "parte 2" (explicação). Quem já zerou o jogo
+//              reentra nos níveis direto daqui.
+//
+// VARIÁVEIS (opts.vars) — valem em speaker, text, bg e src:
+//   {avatar}              → 1 ou 2 (avatar da conta).   Ex.: "src":"av{avatar}.png"
+//   {nome}                → nome da conta
+//   {masculino|feminino}  → escolhe pelo gênero do avatar. Ex.: "você está {pronto|pronta}?"
 //
 // O estado (fundo + personagens) PERSISTE de fala em fala, como numa VN de verdade.
 
@@ -27,6 +34,7 @@ class VNEngine {
      * @param {number}   opts.typeSpeed   ms por letra (0 = sem animação)
      * @param {boolean}  opts.overlay     true = cobre a tela toda (modo "pop-up" de qualquer página)
      * @param {boolean}  opts.hideOnEnd   esconde a engine ao terminar (padrão: = overlay)
+     * @param {Object}   opts.vars        { avatar: 1|2, gender: 'm'|'f', nome: '...' } (ver VARIÁVEIS acima)
      */
     constructor(opts) {
         this.root = opts.root;
@@ -35,6 +43,7 @@ class VNEngine {
         this.saveUrl = opts.saveUrl;
         this.overlay = !!opts.overlay;
         this.hideOnEnd = opts.hideOnEnd ?? this.overlay;
+        this.vars = { avatar: 1, gender: 'm', nome: '', ...(opts.vars || {}) };
 
         const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
         this.typeSpeed = reduced ? 0 : (opts.typeSpeed ?? 28);
@@ -55,6 +64,7 @@ class VNEngine {
 
         document.addEventListener('keydown', (e) => {
             if (this.root.hidden || this._ended) return;
+            if (document.body.classList.contains('modal-open')) return;   // overlay de configurações aberto
             if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
             if (['Enter', ' ', 'ArrowRight'].includes(e.key)) {
                 e.preventDefault();
@@ -94,6 +104,24 @@ class VNEngine {
 
     on(evt, fn) { (this._ev[evt] ||= []).push(fn); return this; }
     emit(evt, ...args) { (this._ev[evt] || []).forEach((fn) => fn(...args)); }
+
+    /* ------------------------------------------------------------- variáveis */
+
+    /** Troca {masculino|feminino}, {avatar} e {nome}. O texto original (no JSON) não muda. */
+    fmt(str) {
+        if (typeof str !== 'string' || !str.includes('{')) return str;
+        const v = this.vars;
+        return str
+            .replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (v.gender === 'f' ? f : m))
+            .replace(/\{avatar\}/g, String(v.avatar))
+            .replace(/\{nome\}/g, v.nome || '');
+    }
+
+    /** Índice da 1ª fala marcada com part:2 (ou 0 se a cena não tem parte 2). */
+    part2Index(scene = this.scene) {
+        const i = (scene?.lines || []).findIndex((l) => Number(l.part) === 2);
+        return i < 0 ? 0 : i;
+    }
 
     /* ----------------------------------------------------- carregar / tocar */
 
@@ -203,6 +231,7 @@ class VNEngine {
     }
 
     _url(kind, src) {
+        src = this.fmt(src);
         if (!src) return '';
         if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) return src;
         return `${this.assetsBase}/${kind}/${encodeURIComponent(src)}`;
@@ -254,9 +283,10 @@ class VNEngine {
             this.nextEl.classList.remove('on');
             return;
         }
-        this.nameEl.hidden = !line.speaker;
-        this.nameEl.textContent = line.speaker || '';
-        this._type(line.text || '', instant);
+        const speaker = this.fmt(line.speaker || '');
+        this.nameEl.hidden = !speaker;
+        this.nameEl.textContent = speaker;
+        this._type(this.fmt(line.text || ''), instant);
     }
 
     _type(text, instant) {

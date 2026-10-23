@@ -13,14 +13,21 @@ class VNQuiz {
      * @param {string}   o.assetsBase  ex.: '/animath/public/assets/img/vn'
      * @param {Object}   o.config      { op:'+|-|*|/', count, min, max, mascot }
      * @param {string}   o.backUrl     para onde voltar ao terminar (tela de níveis)
-     * @param {Function} o.onFinish    async ({hits, errors}) => salva o progresso (lance erro se falhar)
+     * @param {Function} o.onFinish    async ({hits, errors}) => salva o progresso (lance erro se falhar).
+     *                                 Pode devolver { finale, next_level_id } (resposta de /game/complete)
+     * @param {Function} o.levelUrl    (id) => url do nível — habilita o botão "próximo nível"
+     * @param {Function} o.onOutro     chamado no botão "continuar" para tocar a cena de transição do nível
+     * @param {Function} o.onFinale    chamado no botão "continuar" quando o jogo acabou de ser zerado
      */
-    constructor({ stage, assetsBase, config, backUrl, onFinish }) {
+    constructor({ stage, assetsBase, config, backUrl, onFinish, levelUrl, onFinale, onOutro }) {
         this.stage = stage;
         this.assetsBase = assetsBase;
         this.cfg = { op: '+', count: 10, min: 1, max: 10, mascot: '', ...config };
         this.backUrl = backUrl;
         this.onFinish = onFinish;
+        this.levelUrl = levelUrl;
+        this.onFinale = onFinale;
+        this.onOutro = onOutro;
 
         this.hits = 0;
         this.errors = 0;
@@ -28,6 +35,38 @@ class VNQuiz {
         this.locked = false;
         this.firstTry = true;
         this._last = '';
+    }
+
+    /** Remove a camada do quiz (usado antes da mensagem final). */
+    destroy() {
+        this.layer?.remove();
+        this.stage.classList.remove('vn-quiz-mode');
+    }
+
+    /**
+     * Cartão final com botão de redirecionamento (ex.: tela inicial).
+     * @param {Element} stage  vn.stage
+     * @param {Object}  o      { title, text, button, href }
+     */
+    static showEnd(stage, { title = '', text = '', button = 'continuar', href = '/' }) {
+        stage.classList.add('vn-quiz-mode');
+
+        const layer = document.createElement('div');
+        layer.className = 'vq-layer';
+        layer.innerHTML = `
+            <div class="vq-card vq-end">
+                <div class="vq-title"></div>
+                <div class="vq-text"></div>
+                <div class="vq-actions"><button type="button" class="vq-opt vq-go"></button></div>
+            </div>`;
+        layer.querySelector('.vq-title').textContent = title;
+        layer.querySelector('.vq-text').textContent = text;
+
+        const go = layer.querySelector('.vq-go');
+        go.textContent = button;
+        go.onclick = () => { window.location.href = href; };
+
+        stage.append(layer);
     }
 
     static SYMBOL = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -42,7 +81,6 @@ class VNQuiz {
         layer.className = 'vq-layer';
         layer.innerHTML = `
             <div class="vq-shade"></div>
-            <a class="vq-back" title="Voltar"><i class="bi bi-reply-fill"></i></a>
             <div class="vq-card">
                 <div class="vq-question"></div>
                 <div class="vq-options"></div>
@@ -58,8 +96,6 @@ class VNQuiz {
         this.qEl = layer.querySelector('.vq-question');
         this.optsEl = layer.querySelector('.vq-options');
         this.bubble = layer.querySelector('.vq-bubble');
-
-        layer.querySelector('.vq-back').href = this.backUrl;
 
         const img = layer.querySelector('.vq-mascot img');
         if (this.cfg.mascot) img.src = `${this.assetsBase}/chars/${encodeURIComponent(this.cfg.mascot)}`;
@@ -126,12 +162,13 @@ class VNQuiz {
                 <div class="vq-stat errors"><i class="bi bi-x-lg"></i> <span class="n-errors"></span> erros</div>
             </div>
             <div class="vq-status"></div>
-            <button type="button" class="vq-opt vq-go"></button>`;
+            <div class="vq-actions"><button type="button" class="vq-opt vq-go"></button></div>`;
 
         this.card.querySelector('.n-hits').textContent = this.hits;
         this.card.querySelector('.n-errors').textContent = this.errors;
 
         const status = this.card.querySelector('.vq-status');
+        const actions = this.card.querySelector('.vq-actions');
         const go = this.card.querySelector('.vq-go');
 
         const save = async () => {
@@ -139,10 +176,32 @@ class VNQuiz {
             go.textContent = '...';
             status.textContent = 'salvando seu progresso…';
             try {
-                await this.onFinish({ hits: this.hits, errors: this.errors });
+                const res = await this.onFinish({ hits: this.hits, errors: this.errors });
                 status.textContent = 'progresso salvo!';
-                go.textContent = 'voltar aos níveis';
-                go.onclick = () => { window.location.href = this.backUrl; };
+
+                if (res?.finale && this.onFinale) {
+                    // acabou de zerar o jogo → segue para a mensagem final
+                    go.textContent = 'continuar';
+                    go.onclick = () => this.onFinale();
+                } else if (this.onOutro) {
+                    // cena de transição para o próximo nível → depois vai para a tela de níveis
+                    go.textContent = 'continuar';
+                    go.onclick = () => this.onOutro();
+                } else {
+                    go.textContent = 'voltar aos níveis';
+                    go.onclick = () => { window.location.href = this.backUrl; };
+
+                    // transição para o próximo nível = redirecionamento para /game?id=N
+                    if (res?.next_level_id && this.levelUrl) {
+                        actions.querySelector('.vq-next')?.remove();
+                        const next = document.createElement('button');
+                        next.type = 'button';
+                        next.className = 'vq-opt vq-go vq-next';
+                        next.textContent = 'próximo nível';
+                        next.onclick = () => { window.location.href = this.levelUrl(res.next_level_id); };
+                        actions.prepend(next);
+                    }
+                }
             } catch {
                 status.textContent = 'não consegui salvar. tente de novo!';
                 go.textContent = 'tentar de novo';

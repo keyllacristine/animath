@@ -6,7 +6,7 @@ class VnController
     private string $imgDir;
 
     private const KINDS = ['bg', 'chars'];
-    private const POSITIONS = ['left', 'center', 'right'];
+    private const POSITIONS = ['far-left', 'left', 'mid-left', 'center', 'mid-right', 'right', 'far-right'];
     private const MAX_UPLOAD = 5 * 1024 * 1024; // 5 MB
 
     public function __construct(PDO $db)
@@ -139,7 +139,7 @@ class VnController
     {
         $name = is_string($name) ? $name : '';
 
-        return preg_match('/^[\w\-. ]{1,120}\.(png|jpe?g|webp|gif)$/i', $name) ? $name : '';
+        return preg_match('/^[\w\-. {}]{1,120}\.(png|jpe?g|webp|gif)$/i', $name) ? $name : '';
     }
 
     /** Só deixa passar os campos conhecidos, com tipo e tamanho controlados. */
@@ -160,6 +160,11 @@ class VnController
                 'speaker' => mb_substr(trim((string) ($line['speaker'] ?? '')), 0, 60),
                 'text'    => mb_substr((string) ($line['text'] ?? ''), 0, 1000),
             ];
+
+            // marca o início da "parte 2" (explicação) — usado na reentrada rápida
+            if ((int) ($line['part'] ?? 0) === 2) {
+                $item['part'] = 2;
+            }
 
             $bg = $this->cleanFile($line['bg'] ?? '');
             if ($bg !== '') {

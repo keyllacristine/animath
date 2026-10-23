@@ -60,6 +60,11 @@ body.vn-editing .vn-root { padding-right: 400px; }
 .vn-char[data-pos="left"]   { left: 22%; }
 .vn-char[data-pos="center"] { left: 50%; }
 .vn-char[data-pos="right"]  { left: 78%; }
+/* cenas com 4–5 personagens */
+.vn-char[data-pos="far-left"]  { left: 10%; }
+.vn-char[data-pos="mid-left"]  { left: 32%; }
+.vn-char[data-pos="mid-right"] { left: 68%; }
+.vn-char[data-pos="far-right"] { left: 90%; }
 
 /* ---------- caixa de diálogo (div pura) ---------- */
 .vn-dialog {
@@ -181,3 +186,28 @@ body.vn-editing .vn-root { padding-right: 400px; }
     body.vn-editing .vn-root { padding-right: 0; }
     .vn-editor { width: 100%; top: auto; height: 55vh; border-left: 0; border-top: 4px solid var(--purple-dark, #4A154B); }
 }
+
+/* ---------- HUD do jogo: voltar (esq.) e configurações (dir.) ---------- */
+.game-hud { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+.hud-btn {
+    pointer-events: auto;
+    position: absolute;
+    top: 1.4cqw;
+    width: 7.6cqw;
+    height: 7.6cqw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0;
+    background: var(--bg-main, #fffdfa);
+    border: .55cqw solid var(--purple-dark, #4A154B);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--purple-dark, #4A154B);
+    transition: transform .1s ease;
+}
+.hud-btn i { font-size: 4cqw; line-height: 1; }
+.hud-btn:hover { transform: scale(1.05); }
+.hud-back { left: 1.4cqw; }
+.hud-settings { right: 1.4cqw; }

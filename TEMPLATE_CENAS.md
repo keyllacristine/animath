@@ -55,6 +55,7 @@ SELECT data FROM vn_scenes WHERE slug = 'level_1_intro';
 | `text` | texto do diálogo. Use `\n` para quebrar linha | sim |
 | `bg` | troca o fundo (arquivo em `img/vn/bg/`). Se omitir, mantém o atual | não |
 | `chars` | lista de comandos de personagem | não |
+| `part` | use `2` na fala em que a EXPLICAÇÃO começa (ver "Reentrada rápida") | não |
 
 ### Itens de `chars`
 
@@ -84,3 +85,51 @@ O estado persiste de fala em fala: fundo e personagens continuam na tela até vo
 ## Dica
 
 Para não escrever JSON na mão, crie a cena pelo editor (digite o slug novo e clique em "Abrir / criar"), salve, e depois use o `SELECT` acima para copiar o resultado como base.
+
+
+## Avatar e pronomes (muda conforme a conta do jogador)
+
+Funciona em `speaker`, `text`, `bg` e `src`. O texto salvo no JSON não muda, só o que aparece na tela.
+
+| escreva | aparece |
+|---|---|
+| `av{avatar}.png` | `av1.png` (avatar 1) ou `av2.png` (avatar 2) |
+| `{nome}` | nome da conta |
+| `{pronto\|pronta}` | 1ª opção para menino, 2ª para menina |
+| `verdadeir{o\|a}`, `{ele\|ela}`, `{menino\|menina}` | mesma regra, vale para qualquer palavra |
+
+(No SQL/JSON escreva `{pronto|pronta}` normal; a barra invertida acima é só da tabela do Markdown.)
+
+- Qual avatar é menino/menina fica em `config/avatars.php` (hoje: 1 = menino, 2 = menina).
+- Para ter uma expressão por avatar, nomeie os arquivos com o número, ex.: `mel_feliz.png` (fixo) e `heroi_{avatar}_feliz.png` → `heroi_1_feliz.png` / `heroi_2_feliz.png`.
+- Os PNGs com esses nomes precisam existir em `img/vn/chars/`.
+- O mascote do quiz usa o mesmo recurso (`config/quiz.php` → `mascot`).
+
+## Reentrada rápida (parte 2)
+
+Cada nível tem UMA cena (`level_N_intro`). Marque com `"part":2` a primeira fala da explicação (no editor ✎: caixinha "começa a parte 2").
+- Primeira vez: a cena toca inteira.
+- Depois que o jogador concluiu TODOS os níveis: ao entrar em qualquer nível a cena começa na fala marcada, e aparece o botão "pular para as contas".
+- Se a cena não tiver nenhuma fala com `part:2`, ela toca inteira também na reentrada.
+
+## Cena final
+
+- `game_final` (opcional) toca uma única vez, quando o jogador conclui o último nível pela primeira vez.
+- Depois dela aparece a mensagem final de `config/quiz.php` → `finale`, com o botão para a tela inicial.
+- Sem a cena `game_final`, vai direto para a mensagem.
+
+## Roteiro do jogo (como as cenas estão organizadas)
+
+Rode `database/vn.sql` (cria a tabela) e depois `database/vn_roteiro.sql` (cria/atualiza as 9 cenas do roteiro; pode rodar de novo quando mudar o roteiro).
+
+| slug | quando toca |
+|---|---|
+| `intro` | só na 1ª vez no nível 1 (enquanto o nível 1 não foi concluído), antes de `level_1_intro` |
+| `level_N_intro` | ao entrar no nível N. Nos níveis 2–4, a fala com `part:2` é o início da explicação |
+| (quiz) | contas do nível |
+| `level_N_outro` | depois do quiz (níveis 1–3), antes de voltar à tela de níveis. Não toca na reentrada |
+| `game_final` | uma vez, ao concluir o último nível pela 1ª vez. Depois vem a mensagem final |
+
+Posições de personagem: `far-left`, `left`, `mid-left`, `center`, `mid-right`, `right`, `far-right` (use as `far-`/`mid-` em cenas com 4–5 personagens).
+
+Lista de fundos e sprites que o roteiro usa: `ROTEIRO_ASSETS.md`.

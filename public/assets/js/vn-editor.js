@@ -158,13 +158,21 @@ class VNEditor {
             this._select(this.assets.chars, c.src, '(manter imagem)', (v) => { c.src = v; saveChars(); }),
             h('select', { class: 'vn-in', onchange: (ev) => { c.pos = ev.target.value; saveChars(); }, value: c.pos || '' },
                 h('option', { value: '' }, '(manter pos.)'),
+                h('option', { value: 'far-left' }, 'extrema esquerda'),
                 h('option', { value: 'left' }, 'esquerda'),
+                h('option', { value: 'mid-left' }, 'centro-esquerda'),
                 h('option', { value: 'center' }, 'centro'),
-                h('option', { value: 'right' }, 'direita')),
+                h('option', { value: 'mid-right' }, 'centro-direita'),
+                h('option', { value: 'right' }, 'direita'),
+                h('option', { value: 'far-right' }, 'extrema direita')),
             h('select', { class: 'vn-in', onchange: (ev) => { c.show = ev.target.value === '1'; saveChars(); }, value: c.show === false ? '0' : '1' },
                 h('option', { value: '1' }, 'mostrar'),
                 h('option', { value: '0' }, 'esconder')),
             btn('✕', 'Remover comando', () => { line.chars.splice(k, 1); saveChars(); this.renderList(); })));
+
+        // marca esta fala como início da parte 2 (a reentrada rápida começa daqui)
+        const partBox = h('input', { type: 'checkbox', onchange: (ev) => e.editLine(i, { part: ev.target.checked ? 2 : undefined }) });
+        partBox.checked = Number(line.part) === 2;
 
         return h('div', { class: 'vn-card', onclick: () => { if (e.index !== i) e.goTo(i, { instant: true }); } },
             h('div', { class: 'vn-card-head' },
@@ -176,6 +184,7 @@ class VNEditor {
                 btn('✕', 'Excluir fala', () => { if (confirm('Excluir esta fala?')) { e.removeLine(i); this.renderList(); } })),
             h('input', { class: 'vn-in', placeholder: 'Quem fala (ex.: Mel)', value: line.speaker || '', oninput: (ev) => e.editLine(i, { speaker: ev.target.value }) }),
             h('textarea', { class: 'vn-in', rows: '3', placeholder: 'Texto do diálogo…', value: line.text || '', oninput: (ev) => e.editLine(i, { text: ev.target.value }) }),
+            h('label', { class: 'vn-lbl' }, partBox, ' começa a parte 2 (explicação)'),
             h('details', {},
                 h('summary', {}, 'Fundo e personagens'),
                 h('label', { class: 'vn-lbl' }, 'Fundo desta fala'),

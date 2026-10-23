@@ -4,7 +4,7 @@
     <!-- Cabeçalho -->
     <div class="level-header">
         <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
-            <span class="icon-back">↩</span>
+                        <i class="bi bi-reply-fill"></i>
         </a>
         
         <h1 class="page-title">Níveis</h1>
@@ -21,25 +21,25 @@
             'title' => 'adição',
             'symbol' => '+',
             'lineart' => BASE_URL . '/assets/img/casa_lineart.png',
-            'bg_color' => '#E2FCDA'
+            'bg_color' => '#D1F875'
         ],
         2 => [
             'title' => 'subtração',
             'symbol' => '−',
             'lineart' => BASE_URL . '/assets/img/arvore_lineart.png',
-            'bg_color' => '#F0DAFB'
+            'bg_color' => '#D176F1'
         ],
         3 => [
             'title' => 'multiplicação',
             'symbol' => '×',
             'lineart' => BASE_URL . '/assets/img/pinheiros_lineart.png',
-            'bg_color' => '#B7F9F7'
+            'bg_color' => '#A5F0FA'
         ],
         4 => [
             'title' => 'divisão',
             'symbol' => '÷',
             'lineart' => BASE_URL . '/assets/img/rio_lineart.png',
-            'bg_color' => '#FFE5B4'
+            'bg_color' => '#F8B17A'
         ]
     ];
 
@@ -102,13 +102,18 @@
 
     <?php 
     $overallProgress = round(($completedCount / $totalLevels) * 100);
+    $gameDone = $completedCount >= $totalLevels;   // jogo todo concluído
     ?>
 
     <!-- Barra de Progresso -->
     <div class="progress-section">
-        <p class="progress-label">Progresso: <strong><?= $overallProgress ?>%</strong></p>
+        <?php if ($gameDone): ?>
+            <p class="progress-label">Progresso: <strong>concluído <i class="bi bi-check-circle-fill"></i></strong></p>
+        <?php else: ?>
+            <p class="progress-label">Progresso: <strong><?= $overallProgress ?>%</strong></p>
+        <?php endif; ?>
         <div class="progress-bar-container">
-            <div class="progress-bar-fill" style="width: <?= $overallProgress ?>%;"></div>
+            <div class="progress-bar-fill <?= $gameDone ? 'done' : '' ?>" style="width: <?= $overallProgress ?>%;"></div>
         </div>
     </div>
 </main>

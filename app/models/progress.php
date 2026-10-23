@@ -66,6 +66,23 @@ class Progress
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /** true se o usuário concluiu TODOS os níveis cadastrados (libera modo infinito / reentrada rápida). */
+    public function hasCompletedAll(int $userId): bool
+    {
+        $sql = "
+            SELECT
+                (SELECT COUNT(*) FROM levels) AS total,
+                (SELECT COUNT(*) FROM user_progress
+                  WHERE user_id = :user_id AND completed = 1) AS done
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row && (int) $row['total'] > 0 && (int) $row['done'] >= (int) $row['total'];
+    }
+
     /**
      * NOVO — chamado pelo GameController::complete() ao terminar o quiz.
      * Cria o progresso do nível ou atualiza se já existir (UNIQUE user_id + level_id):

@@ -55,6 +55,16 @@ class AuthController
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     $avatar = (int) ($_POST['avatar'] ?? 1);
+if ($this->user->findByUsername($username)) {
+    if ($this->user->findByUsername($username)) {
+    echo "<script>
+        alert('Epa! Esse nome de usuário já está em uso. Por favor, escolha outro.')
+        window.location.href = '" . BASE_URL . "/register'
+        </script>";
+        
+}
+
+} else {
 
     if ($this->user->create($username, $password, $avatar)) {
         
@@ -73,5 +83,6 @@ class AuthController
 
     require '../app/views/auth/register.php';
     exit;
+    }
 }
 }

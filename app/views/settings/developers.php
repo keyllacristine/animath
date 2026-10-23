@@ -4,7 +4,7 @@
     <!-- Botão Voltar -->
     <div class="top-bar">
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-back" title="Voltar">
-            <span class="icon-back">↩</span>
+            <i class="bi bi-reply-fill"></i>
         </a>
     </div>
 

@@ -1,6 +1,12 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php $isLoggedIn = isset($_SESSION['user_id']);
 
+// Modo infinito só libera depois de concluir todos os níveis (admin vê liberado pra testar)
+$infiniteUnlocked = $isLoggedIn && (
+    ($_SESSION['role'] ?? '') === 'admin'
+    || (new Progress($db))->hasCompletedAll((int) $_SESSION['user_id'])
+);
+
 $bgImage = $isLoggedIn 
     ? BASE_URL . '/assets/img/logado.png' 
     : BASE_URL . '/assets/img/nao-logado.png';
@@ -18,7 +24,7 @@ $bgImage = $isLoggedIn
 <?php if ($isLoggedIn): ?>
 <div class="container logado">
     <header class="header-logado">
-        <h1>AniMath</h1>
+    <img class="logo" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
             <span class="icon-gear"><i class="bi bi-gear-fill"></i></span>
         </a>
@@ -31,9 +37,13 @@ $bgImage = $isLoggedIn
                 </a>
             </div>
              <div>
+                <?php if ($infiniteUnlocked): ?>
                 <a href="<?= BASE_URL ?>/game/infinite">
                     <button type="button" onclick="soundManager.playClickSound()">Modo infinito <i class="bi bi-infinity"></i></button>
                 </a>
+                <?php else: ?>
+                <button type="button" class="is-locked" disabled title="conclua todos os níveis para liberar">Modo infinito <i class="bi bi-lock-fill"></i></button>
+                <?php endif; ?>
             </div>
             <div>
                 <a href="<?= BASE_URL ?>/profile">
@@ -46,7 +56,7 @@ $bgImage = $isLoggedIn
 
 <?php else: ?>
 <div class="container nao-logado">
-    <h1>AniMath</h1>
+    <img class="logo" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
     <nav class="nav nao-logado">
         <div>
             <a href="<?= BASE_URL ?>/register">
