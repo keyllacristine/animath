@@ -28,7 +28,7 @@
                     <label class="avatar-option">
                         <input type="radio" name="avatar" value="1" <?= (($userData['avatar'] ?? 1) == 1) ? 'checked' : '' ?>>
                         <div class="avatar-card">
-                            <img src="<?= BASE_URL ?>/assets/img/av1.png" alt="Avatar Coelho com Ursinho">
+                            <img src="<?= BASE_URL ?>/assets/img/av1.png" alt="Avatar Coelho">
                             <div class="overlay">
                                 <span class="checkmark"><i class="bi bi-check-lg"></i></span>
                             </div>
@@ -38,7 +38,7 @@
                     <label class="avatar-option">
                         <input type="radio" name="avatar" value="2" <?= (($userData['avatar'] ?? 1) == 2) ? 'checked' : '' ?>>
                         <div class="avatar-card">
-                            <img src="<?= BASE_URL ?>/assets/img/av2.png" alt="Avatar Coelho com Laço">
+                            <img src="<?= BASE_URL ?>/assets/img/av2.png" alt="Avatar Coelha">
                             <div class="overlay">
                                 <span class="checkmark"><i class="bi bi-check-lg"></i></span>
                             </div>

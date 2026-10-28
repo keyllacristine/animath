@@ -50,7 +50,8 @@ body.vn-editing .vn-root { padding-right: 400px; }
 .vn-char {
     position: absolute;
     bottom: 0;
-    height: 88%;
+    height: 80%;
+    margin-bottom: 10%;
     transform: translateX(-50%);
     opacity: 0;
     transition: opacity .3s ease, left .35s ease;
