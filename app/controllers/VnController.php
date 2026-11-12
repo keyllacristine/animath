@@ -6,6 +6,8 @@ class VnController
     private string $imgDir;
 
     private const KINDS = ['bg', 'chars'];
+    private const POPUP_TYPES = ['items', 'equation', 'column', 'image'];
+    private const POPUP_OPS = ['+', '-', '*', '/'];
     private const POSITIONS = ['far-left', 'left', 'mid-left', 'center', 'mid-right', 'right', 'far-right'];
     private const MAX_UPLOAD = 5 * 1024 * 1024; // 5 MB
 
@@ -143,6 +145,60 @@ class VnController
     }
 
     /** Só deixa passar os campos conhecidos, com tipo e tamanho controlados. */
+    /** Só deixa passar campos conhecidos, com tipo e tamanho controlados. null = ignorar; false = fechar. */
+    private function cleanPopup(mixed $p): array|false|null
+    {
+        if ($p === false) {
+            return false;
+        }
+        if (!is_array($p)) {
+            return null;
+        }
+        if (!empty($p['hide'])) {
+            return false;
+        }
+
+        $out = [];
+        if (isset($p['type'])) {
+            if (!in_array($p['type'], self::POPUP_TYPES, true)) {
+                return null;
+            }
+            $out['type'] = $p['type'];
+        }
+        if (isset($p['op']) && in_array($p['op'], self::POPUP_OPS, true)) {
+            $out['op'] = $p['op'];
+        }
+        foreach (['step', 'total', 'remove', 'times', 'per', 'parts'] as $k) {
+            if (isset($p[$k]) && is_numeric($p[$k])) {
+                $out[$k] = max(0, min(30, (int) $p[$k]));
+            }
+        }
+        foreach (['a', 'b'] as $k) {
+            if (isset($p[$k]) && is_numeric($p[$k])) {
+                $out[$k] = max(0, min(999999, (int) $p[$k]));
+            }
+        }
+        if (isset($p['groups']) && is_array($p['groups'])) {
+            $out['groups'] = array_map(
+                fn ($n) => max(0, min(30, (int) $n)),
+                array_slice(array_values($p['groups']), 0, 8)
+            );
+        }
+        foreach (['icon' => 16, 'text' => 60, 'mark' => 8, 'title' => 60, 'caption' => 160] as $k => $max) {
+            if (isset($p[$k]) && is_string($p[$k])) {
+                $out[$k] = mb_substr($p[$k], 0, $max);
+            }
+        }
+        foreach (['src'] as $k) {
+            $file = $this->cleanFile($p[$k] ?? '');
+            if ($file !== '') {
+                $out[$k] = $file;
+            }
+        }
+
+        return $out ?: null;
+    }
+
     private function sanitizeLines(mixed $lines): array
     {
         if (!is_array($lines)) {
@@ -169,6 +225,14 @@ class VnController
             $bg = $this->cleanFile($line['bg'] ?? '');
             if ($bg !== '') {
                 $item['bg'] = $bg;
+            }
+
+            // pop-up didático (ver public/assets/js/vn-popup.js): false = fechar
+            if (array_key_exists('popup', $line)) {
+                $popup = $this->cleanPopup($line['popup']);
+                if ($popup !== null) {
+                    $item['popup'] = $popup;
+                }
             }
 
             $chars = [];

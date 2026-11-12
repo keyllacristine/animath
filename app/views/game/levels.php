@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php
 // Vêm do GameController::show():
-//   $level, $quiz, $finale, $replay (já zerou o jogo?), $prologue, $outro, $avatar (1|2), $gender ('m'|'f'), $username
+//   $level, $quiz, $armacao, $finale, $replay (já zerou o jogo?), $prologue, $outro, $avatar (1|2), $gender ('m'|'f'), $username
 $levelId = (int) $level['id'];
 $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
 $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contexto, parte 2 = explicação)
@@ -24,6 +24,7 @@ $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contex
     </button>
 <?php endif; ?>
 
+<script src="<?= BASE_URL ?>/assets/js/vn-popup.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/vn-engine.js"></script>
 <script src="<?= BASE_URL ?>/assets/js/vn-quiz.js"></script>
 <?php if ($isAdmin): ?>
@@ -36,6 +37,7 @@ $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contex
     const SLUG       = <?= json_encode($slug) ?>;
     const FINAL_SLUG = 'game_final';   // cena opcional exibida antes da mensagem final
     const PROLOGUE   = <?= json_encode($prologue) ?>;   // 'intro' (1ª vez no nível 1) ou ''
+    const ARMACAO    = <?= json_encode($armacao) ?>;   // cena de armação da operação ('' = sem)
     const OUTRO      = <?= json_encode($outro) ?>;      // cena de transição depois do quiz ('' na reentrada)
     const LEVEL_ID   = <?= $levelId ?>;
     const IS_ADMIN   = <?= $isAdmin ? 'true' : 'false' ?>;
@@ -121,6 +123,26 @@ $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contex
         }
     }
 
+    // ARMAÇÃO OPCIONAL: botão do quiz reabre a cena de armação por cima e volta ao quiz no mesmo ponto
+    let helpMode = false;
+    function closeHelp() {
+        if (!helpMode) return;
+        helpMode = false;
+        vn.stop();
+        quiz.resume();
+    }
+    async function openArmacao() {
+        if (!ARMACAO || !quiz || helpMode) return;
+        helpMode = true;
+        quiz.pause();
+        try {
+            await vn.play(ARMACAO);                    // o 'end' dessa cena chama closeHelp()
+            if (!vn.scene.lines.length) closeHelp();
+        } catch {
+            closeHelp();                               // cena não cadastrada: volta direto ao quiz
+        }
+    }
+
     // FLUXO DO NÍVEL: [prólogo] → cena de VN → quiz → (salva) → tela de níveis / próximo nível / mensagem final
     function startQuiz() {
         if (quizStarted) return;
@@ -136,6 +158,7 @@ $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contex
             onFinish:   saveProgress,
             onFinale:   playFinale,
             onOutro:    OUTRO ? playOutro : null,
+            onHelp:     ARMACAO ? openArmacao : null,
         });
         quiz.start();
     }
@@ -147,7 +170,15 @@ $slug    = 'level_' . $levelId . '_intro';   // cena do nível (parte 1 = contex
                 if (!IS_ADMIN) startQuiz();
             });
         }
-        else if (scene.slug === SLUG) startQuiz();       // só a cena principal dispara o quiz
+        else if (scene.slug === SLUG) {                  // fim da explicação
+            // 1ª vez: cena de armação antes do quiz. Quem já zerou o jogo vai direto às contas.
+            if (ARMACAO && !REPLAY) vn.play(ARMACAO).catch(startQuiz);
+            else startQuiz();
+        }
+        else if (scene.slug === ARMACAO) {
+            if (helpMode) closeHelp();                   // veio do botão do quiz
+            else startQuiz();                            // veio do fluxo normal
+        }
         else if (scene.slug === FINAL_SLUG) showFinalCard();
         else if (scene.slug === OUTRO) goLevels();
     });

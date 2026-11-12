@@ -12,6 +12,8 @@
 //   chars    – (opcional) comandos de personagens:
 //              [{ id:"mel", src:"av1.png", pos:"left|center|right", show:true|false }]
 //              campos vazios/ausentes = mantém o que já estava
+//   popup    – (opcional) janelinha didática com passos (ver vn-popup.js). Persiste de fala em fala:
+//              {type:"column", op:"+", a:47, b:38, step:2}   |   {step:3} só avança   |   false fecha
 //   part     – (opcional) 2 = esta fala começa a "parte 2" (explicação). Quem já zerou o jogo
 //              reentra nos níveis direto daqui.
 //
@@ -50,7 +52,7 @@ class VNEngine {
 
         this.scene = null;
         this.index = -1;
-        this.state = { bg: null, chars: {} };
+        this.state = { bg: null, chars: {}, popup: null };
         this.stack = [];          // cenas "pausadas" (para insertScene)
         this.typing = false;
         this._ended = false;
@@ -83,6 +85,7 @@ class VNEngine {
                 <div class="vn-bg"></div>
                 <div class="vn-bg"></div>
                 <div class="vn-chars"></div>
+                <div class="vn-popup"></div>
                 <div class="vn-dialog">
                     <div class="vn-name" hidden></div>
                     <div class="vn-text"></div>
@@ -93,6 +96,7 @@ class VNEngine {
         this.stage = q('.vn-stage');
         this.bgLayers = [...this.root.querySelectorAll('.vn-bg')];
         this.charLayer = q('.vn-chars');
+        this.popupEl = q('.vn-popup');
         this.nameEl = q('.vn-name');
         this.textEl = q('.vn-text');
         this.nextEl = q('.vn-next');
@@ -215,6 +219,12 @@ class VNEngine {
 
     _applyLine(line, st) {
         if (line.bg) st.bg = line.bg;
+        if ('popup' in line) {                       // pop-up didático: persiste, avança por patch ou fecha
+            const p = line.popup;
+            if (!p || p.hide) st.popup = null;
+            else if (p.type || !st.popup) st.popup = { ...p };
+            else st.popup = { ...st.popup, ...p };
+        }
         for (const c of line.chars || []) {
             if (!c.id) continue;
             const cur = st.chars[c.id] || { id: c.id, src: '', pos: 'center', show: false };
@@ -225,7 +235,7 @@ class VNEngine {
     }
 
     _stateUpTo(i) {
-        const st = { bg: null, chars: {} };
+        const st = { bg: null, chars: {}, popup: null };
         for (let k = 0; k <= i; k++) this._applyLine(this.scene.lines[k], st);
         return st;
     }
@@ -250,6 +260,7 @@ class VNEngine {
 
     _renderState() {
         this._setBg(this._url('bg', this.state.bg));
+        this._renderPopup(this.state.popup);
 
         const seen = new Set();
         for (const c of Object.values(this.state.chars)) {
@@ -270,6 +281,31 @@ class VNEngine {
             el.classList.toggle('vn-visible', !!c.show && !!url);
         }
         for (const [id, el] of this.charEls) if (!seen.has(id)) el.classList.remove('vn-visible');
+    }
+
+    /* ------------------------------------------------------------- pop-up */
+
+    _renderPopup(p) {
+        const box = this.popupEl;
+        if (!p || !window.VNPopup) {
+            box.classList.remove('on');
+            this.stage.classList.remove('has-popup');
+            this._popKey = null;
+            return;
+        }
+        const f = { ...p };
+        for (const k of ['title', 'caption', 'text']) if (typeof f[k] === 'string') f[k] = this.fmt(f[k]);
+
+        const key = JSON.stringify({ ...p, step: 0 });
+        const same = key === this._popKey && box.classList.contains('on');
+        const info = VNPopup.render(box, f, {
+            url: (kind, src) => this._url(kind, src),
+            prevStep: same ? this._popStep : 0,         // mesmo pop-up: anima só o passo novo; pop-up novo: anima tudo
+        });
+        this._popKey = key;
+        this._popStep = info.step;
+        box.classList.add('on');
+        this.stage.classList.add('has-popup');           // os personagens abrem espaço nas laterais
     }
 
     /* -------------------------------------------------------- caixa de texto */

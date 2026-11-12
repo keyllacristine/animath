@@ -21,6 +21,7 @@
 
 .vn-quiz-mode { cursor: default; }
 .vn-quiz-mode .vn-dialog,
+.vn-quiz-mode .vn-popup,
 .vn-quiz-mode .vn-chars { display: none; }
 
 .vq-layer {
@@ -138,16 +139,20 @@
     right: 1.5cqw;
     bottom: 0;
     width: 26cqw;
-    height: 44%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    transform: translateY(105%);
-    transition: transform .25s ease;
+    height: 18cqw;            /* só a METADE de cima do sprite aparece, espiando no canto */
     pointer-events: none;
 }
-.vq-layer.feedback .vq-mascot { transform: none; }
-.vq-mascot img { height: 100%; width: auto; display: block; }
+.vq-mascot img {
+    position: absolute;
+    right: 0;
+    bottom: 20%;
+    height: 36cqw;            /* sprite inteiro = 2× a parte visível */
+    width: auto;
+    display: block;
+    transform: translateY(120%);          /* escondido abaixo da tela */
+    transition: transform .25s ease;
+}
+.vq-layer.feedback .vq-mascot img { transform: translateY(50%); }   /* metade visível */
 
 .vq-bubble {
     position: absolute;
@@ -165,7 +170,11 @@
     line-height: 1.25;
     white-space: pre-line;
     color: var(--purple-dark, #4A154B);
+    opacity: 0;
+    transform: translateY(2cqw);
+    transition: opacity .2s ease, transform .25s ease;
 }
+.vq-layer.feedback .vq-bubble { opacity: 1; transform: none; }
 .vq-bubble::after {          /* rabinho do balão */
     content: '';
     position: absolute;
@@ -195,3 +204,22 @@
     white-space: pre-line;
     margin-bottom: 2.4cqw;
 }
+
+/* ---------- botão "armar a conta" (ajuda durante o quiz) ---------- */
+.vq-help {
+    position: absolute;
+    left: 1.5cqw;
+    bottom: 1.5cqw;
+    padding: 1cqw 2.2cqw;
+    background: var(--bg-main, #fffdfa);
+    border: .5cqw solid var(--purple-dark, #4A154B);
+    border-radius: 2.6cqw;
+    color: var(--purple-dark, #4A154B);
+    font: inherit;
+    font-size: 2.5cqw;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 3;
+}
+.vq-help[hidden] { display: none; }
+.vq-help:hover { transform: scale(1.04); }

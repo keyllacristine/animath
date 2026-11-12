@@ -12,14 +12,17 @@ class VNQuiz {
      * @param {Element}  o.stage       vn.stage (a "tela" 16:9 da engine)
      * @param {string}   o.assetsBase  ex.: '/animath/public/assets/img/vn'
      * @param {Object}   o.config      { op:'+|-|*|/', count, min, max, mascot }
+     *                                 mascot: arquivo em chars/. Use {mood} para o sprite mudar com o resultado:
+     *                                 'luke_{mood}.png' -> luke_happy.png (acertou) / luke_sad.png (errou)
      * @param {string}   o.backUrl     para onde voltar ao terminar (tela de níveis)
      * @param {Function} o.onFinish    async ({hits, errors}) => salva o progresso (lance erro se falhar).
      *                                 Pode devolver { finale, next_level_id } (resposta de /game/complete)
      * @param {Function} o.levelUrl    (id) => url do nível — habilita o botão "próximo nível"
      * @param {Function} o.onOutro     chamado no botão "continuar" para tocar a cena de transição do nível
+     * @param {Function} o.onHelp       se informado, mostra o botão "armar a conta" (chamado ao clicar)
      * @param {Function} o.onFinale    chamado no botão "continuar" quando o jogo acabou de ser zerado
      */
-    constructor({ stage, assetsBase, config, backUrl, onFinish, levelUrl, onFinale, onOutro }) {
+    constructor({ stage, assetsBase, config, backUrl, onFinish, levelUrl, onFinale, onOutro, onHelp }) {
         this.stage = stage;
         this.assetsBase = assetsBase;
         this.cfg = { op: '+', count: 10, min: 1, max: 10, mascot: '', ...config };
@@ -28,6 +31,7 @@ class VNQuiz {
         this.levelUrl = levelUrl;
         this.onFinale = onFinale;
         this.onOutro = onOutro;
+        this.onHelp = onHelp;
 
         this.hits = 0;
         this.errors = 0;
@@ -35,6 +39,18 @@ class VNQuiz {
         this.locked = false;
         this.firstTry = true;
         this._last = '';
+    }
+
+    /** Esconde o quiz (sem perder o andamento) para mostrar uma cena por cima. */
+    pause() {
+        this.layer.style.display = 'none';
+        this.stage.classList.remove('vn-quiz-mode');
+    }
+
+    /** Volta ao quiz do ponto onde parou. */
+    resume() {
+        this.layer.style.display = '';
+        this.stage.classList.add('vn-quiz-mode');
     }
 
     /** Remove a camada do quiz (usado antes da mensagem final). */
@@ -88,8 +104,16 @@ class VNQuiz {
             <div class="vq-mascot">
                 <div class="vq-bubble"></div>
                 <img alt="">
-            </div>`;
+            </div>
+            <button type="button" class="vq-help" hidden>✏️ armar a conta</button>`;
         this.stage.append(layer);
+
+        // ajuda opcional: reabre a cena de armação sem perder o quiz (a criança pode resolver no papel)
+        this.helpBtn = layer.querySelector('.vq-help');
+        if (this.onHelp) {
+            this.helpBtn.hidden = false;
+            this.helpBtn.addEventListener('click', () => this.onHelp());
+        }
 
         this.layer = layer;
         this.card = layer.querySelector('.vq-card');
@@ -97,11 +121,27 @@ class VNQuiz {
         this.optsEl = layer.querySelector('.vq-options');
         this.bubble = layer.querySelector('.vq-bubble');
 
-        const img = layer.querySelector('.vq-mascot img');
-        if (this.cfg.mascot) img.src = `${this.assetsBase}/chars/${encodeURIComponent(this.cfg.mascot)}`;
-        else img.hidden = true;
+        this.mascotImg = layer.querySelector('.vq-mascot img');
+        // sprite que não existe: esconde só a imagem (o balão continua aparecendo)
+        this.mascotImg.addEventListener('error', () => { this.mascotImg.hidden = true; });
+        if (this.cfg.mascot) {
+            ['happy', 'sad'].forEach((mood) => { new Image().src = this._mascotUrl(mood); });   // pré-carrega
+        } else {
+            this.mascotImg.hidden = true;
+        }
 
         this._next();
+    }
+
+    _mascotUrl(mood) {
+        return `${this.assetsBase}/chars/${encodeURIComponent(this.cfg.mascot.replace('{mood}', mood))}`;
+    }
+
+    /** mood: 'happy' (acertou) | 'sad' (errou) */
+    _setMascot(mood) {
+        if (!this.cfg.mascot) return;
+        this.mascotImg.hidden = false;
+        this.mascotImg.src = this._mascotUrl(mood);
     }
 
     _next() {
@@ -144,6 +184,7 @@ class VNQuiz {
             else window.soundManager?.playIncorrectAnswer();
         } catch { /* som é opcional */ }
 
+        this._setMascot(ok ? 'happy' : 'sad');
         this.layer.classList.add('feedback');
         setTimeout(() => {
             this.layer.classList.remove('feedback');
@@ -155,6 +196,7 @@ class VNQuiz {
     /* ------------------------------------------------------------- conclusão */
 
     _finish() {
+        if (this.helpBtn) this.helpBtn.hidden = true;   // na tela de resultado não há mais o que armar
         this.card.innerHTML = `
             <div class="vq-title">nível concluído!</div>
             <div class="vq-stats">

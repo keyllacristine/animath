@@ -35,6 +35,11 @@ class GameController
         $quiz = $quizConfig[$levelId] ?? $quizConfig['default'];
         $finale = $quizConfig['finale'] ?? [];
 
+        // Cena de ARMAÇÃO da operação do nível (database/vn_armacao.sql): toca depois da explicação
+        // e também pode ser reaberta pelo botão "armar a conta" durante o quiz.
+        $armacaoNames = ['+' => 'adicao', '-' => 'subtracao', '*' => 'multiplicacao', '/' => 'divisao'];
+        $armacao = isset($armacaoNames[$quiz['op'] ?? '']) ? 'armacao_' . $armacaoNames[$quiz['op']] : '';
+
         // Já concluiu o jogo todo? Então as cenas começam na parte 2 (explicação)
         // e aparece o botão de pular direto para as contas.
         $replay = $this->progress->hasCompletedAll((int) $_SESSION['user_id']);

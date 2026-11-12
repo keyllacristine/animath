@@ -133,3 +133,27 @@ Rode `database/vn.sql` (cria a tabela) e depois `database/vn_roteiro.sql` (cria/
 Posições de personagem: `far-left`, `left`, `mid-left`, `center`, `mid-right`, `right`, `far-right` (use as `far-`/`mid-` em cenas com 4–5 personagens).
 
 Lista de fundos e sprites que o roteiro usa: `ROTEIRO_ASSETS.md`.
+
+## Jogador em primeira pessoa (POV)
+
+O jogador não aparece como sprite: as falas dele saem com o nome da conta (`{nome}`) e sem imagem, e a narração usa "você". O avatar aparece só no fundo da home, no perfil, no mascote do quiz e na ilustração final (`ilustracao_final_{avatar}.png`, que vira `_1` ou `_2`).
+
+## Pop-up didático (passos + armação de contas)
+
+Janelinha em HTML/CSS que aparece durante as falas, revelada passo a passo. Campo `popup` na fala; o pop-up **persiste** de fala em fala. Uma fala só com `{"step": 3}` avança o mesmo pop-up, `{"type": ...}` troca, e `false` fecha. No editor ✎ use "Pop-up didático" → "(inserir exemplo…)".
+
+| tipo | exemplo | passos |
+|---|---|---|
+| objetos `+` | `{"type":"items","op":"+","icon":"🌸","groups":[2,3],"step":1}` | 1 grupo A, 2 grupo B, 3 resultado |
+| objetos `-` | `{"type":"items","op":"-","icon":"🌸","total":5,"remove":2}` | 1 todos, 2 riscar, 3 resultado |
+| objetos `*` | `{"type":"items","op":"*","icon":"🍄","times":3,"per":2}` | 1..N grupos, N+1 soma, N+2 vezes |
+| objetos `/` | `{"type":"items","op":"/","icon":"🐟","total":6,"parts":3}` | 1 monte, 2 pratos, 3 divide, 4 conta |
+| sinal | `{"type":"equation","text":"3 × 2 = 6","mark":"×","caption":"..."}` | — |
+| **armação** | `{"type":"column","op":"+","a":47,"b":38,"step":0}` | 0 conta montada, depois 1 coluna por passo |
+| imagem/GIF | `{"type":"image","src":"arquivo.gif"}` | pasta `img/vn/popup/` |
+
+Armação: `+` com "vai um" · `-` com "empresta" (inclusive 300 − 47) · `*` com um dígito (vai um) ou vários (produtos parciais) · `/` com a chave. `a` e `b` são inteiros (`a ≥ b` na subtração). Se o `step` passar do último, mostra o último. `icon` aceita emoji ou, com `src`, um arquivo de `chars/`.
+
+Com o pop-up aberto os personagens vão para as laterais: use no máximo 2 por cena nessas falas.
+
+Exemplos prontos de armação: `database/vn_armacao.sql` (cenas `armacao_adicao`, `_subtracao`, `_multiplicacao`, `_divisao`; chame com `vn.insertScene('armacao_adicao')`).

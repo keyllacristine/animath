@@ -174,6 +174,40 @@ class VNEditor {
         const partBox = h('input', { type: 'checkbox', onchange: (ev) => e.editLine(i, { part: ev.target.checked ? 2 : undefined }) });
         partBox.checked = Number(line.part) === 2;
 
+        // pop-up didático: JSON editável + exemplos prontos
+        const popupArea = h('textarea', { class: 'vn-in', rows: '4', spellcheck: 'false', placeholder: 'vazio = sem mudança. false = fecha o pop-up' });
+        popupArea.value = line.popup === undefined ? '' : JSON.stringify(line.popup);
+        const popupMsg = h('div', { class: 'vn-lbl' }, '');
+        const applyPopup = (txt) => {
+            txt = txt.trim();
+            if (txt === '') { e.editLine(i, { popup: undefined }); popupMsg.textContent = ''; return; }
+            try { e.editLine(i, { popup: JSON.parse(txt) }); popupMsg.textContent = ''; }
+            catch { popupMsg.textContent = 'JSON inválido (ainda não aplicado)'; }
+        };
+        popupArea.addEventListener('input', () => applyPopup(popupArea.value));
+        const presets = {
+            '+ objetos':   { type: 'items', op: '+', icon: '🌸', groups: [2, 3], step: 1 },
+            '− objetos':   { type: 'items', op: '-', icon: '🌸', total: 5, remove: 2, step: 1 },
+            '× objetos':   { type: 'items', op: '*', icon: '🍄', times: 3, per: 2, step: 1 },
+            '÷ objetos':   { type: 'items', op: '/', icon: '🐟', total: 6, parts: 3, step: 1 },
+            'sinal em destaque': { type: 'equation', text: '3 × 2 = 6', mark: '×', caption: 'sinal da multiplicação' },
+            'armação  +':  { type: 'column', op: '+', a: 47, b: 38, step: 0 },
+            'armação  −':  { type: 'column', op: '-', a: 52, b: 27, step: 0 },
+            'armação  ×':  { type: 'column', op: '*', a: 24, b: 3, step: 0 },
+            'armação  ÷':  { type: 'column', op: '/', a: 78, b: 3, step: 0 },
+            'avançar passo': { step: 2 },
+            'fechar':      false,
+        };
+        const presetSel = h('select', { class: 'vn-in', onchange: (ev) => {
+            const k = ev.target.value; if (!k) return;
+            popupArea.value = JSON.stringify(presets[k]); applyPopup(popupArea.value); ev.target.value = '';
+        } }, h('option', { value: '' }, '(inserir exemplo…)'), Object.keys(presets).map((k) => h('option', { value: k }, k)));
+
+        const popupDet = h('details', {},
+            h('summary', {}, 'Pop-up didático (passos / armação)'),
+            presetSel, popupArea, popupMsg);
+        popupDet.open = line.popup !== undefined;   // abre sozinho nas falas que já têm pop-up
+
         return h('div', { class: 'vn-card', onclick: () => { if (e.index !== i) e.goTo(i, { instant: true }); } },
             h('div', { class: 'vn-card-head' },
                 h('b', {}, '#' + (i + 1)),
@@ -185,6 +219,7 @@ class VNEditor {
             h('input', { class: 'vn-in', placeholder: 'Quem fala (ex.: Mel)', value: line.speaker || '', oninput: (ev) => e.editLine(i, { speaker: ev.target.value }) }),
             h('textarea', { class: 'vn-in', rows: '3', placeholder: 'Texto do diálogo…', value: line.text || '', oninput: (ev) => e.editLine(i, { text: ev.target.value }) }),
             h('label', { class: 'vn-lbl' }, partBox, ' começa a parte 2 (explicação)'),
+            popupDet,
             h('details', {},
                 h('summary', {}, 'Fundo e personagens'),
                 h('label', { class: 'vn-lbl' }, 'Fundo desta fala'),
