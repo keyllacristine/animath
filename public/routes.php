@@ -64,7 +64,12 @@ switch (true) {
         break;
 
     case $path === '/game/infinite':
-        (new GameController($db))->infinite();
+    case $path === '/game/arcade':
+        (new GameController($db))->arcade();
+        break;
+
+    case str_starts_with($path, '/game/arcade/'):
+        (new GameController($db))->arcadeGame(substr($path, strlen('/game/arcade/')));
         break;
 
     case $path === '/levels':

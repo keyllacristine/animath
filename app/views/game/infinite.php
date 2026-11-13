@@ -1,23 +1,92 @@
 <?php include __DIR__ . '/../header.php'; ?>
+<?php
+$sprite = BASE_URL . '/assets/img/vn/chars/av' . (int) $avatar . '.png';
+$jsConfig = $infinite + [
+    'gender'   => $gender,
+    'username' => $username,
+];
+?>
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/infinite.css">
 
-<main class="level-select-page">
-    <div class="level-header">
-        <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
-            <span class="icon-back">↩</span>
-        </a>
+<div class="ig-wrap">
+    <div class="ig-stage" id="igStage">
 
-        <h1 class="page-title">Modo infinito</h1>
+        <div class="ig-field" id="igField">
+            <div class="ig-rabbit" id="igRabbit">
+                <div class="ig-flip"><img src="<?= $sprite ?>" alt=""></div>
+            </div>
+        </div>
+        <div class="ig-flash" id="igFlash"></div>
 
-        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
-            <i class="bi bi-gear-fill"></i>
-        </a>
+        <a href="<?= $arcadeUrl ?>" class="ig-circle ig-back" title="Voltar">↩</a>
+        <div class="ig-hud ig-lives" id="igLives"></div>
+        <div class="ig-hud ig-score">pontos: <b id="igScore">0</b></div>
+        <div class="ig-hud ig-question" id="igQuestion"></div>
+        <div class="ig-hud ig-timer" id="igTimer">
+            <div class="ig-time" id="igTime">1:00</div>
+            <div class="ig-bar"><i id="igBar"></i></div>
+        </div>
+        <button type="button" class="ig-circle ig-pausebtn" id="igPauseBtn" title="Pausar"></button>
+
+        <div class="ig-count" id="igCount"></div>
+
+        <div class="ig-touch">
+            <button type="button" id="igLeft">◀</button>
+            <button type="button" id="igRight">▶</button>
+        </div>
+
+        <div class="ig-overlay" id="igStart">
+            <div class="ig-card">
+                <h2><?= htmlspecialchars($infinite['title']) ?></h2>
+                <div class="ig-howto">
+                    <p>mova com ← → (ou A e D) e pegue só o resultado certo da conta!</p>
+                </div>
+                <p>você tem <?= (int) $infinite['lives'] ?> vidas e <?= (int) $infinite['time'] ?> segundos. pegar um resultado errado tira uma vida.</p>
+                <p>recorde: <b id="igStartBest">0</b></p>
+                <div class="ig-actions">
+                    <button type="button" class="ig-btn" id="igStartBtn">começar</button>
+                    <a href="<?= $arcadeUrl ?>" class="ig-btn alt">voltar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ig-overlay" id="igPause">
+            <div class="ig-card">
+                <h2>jogo pausado</h2>
+                <div class="ig-actions">
+                    <button type="button" class="ig-btn" id="igResumeBtn">continuar</button>
+                    <button type="button" class="ig-btn alt" id="igRestartBtn">recomeçar</button>
+                    <button type="button" class="ig-btn alt" id="igSoundBtn"><i class="bi bi-volume-up-fill"></i> som</button>
+                    <a href="<?= $arcadeUrl ?>" class="ig-btn alt">sair</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ig-overlay" id="igEnd">
+            <div class="ig-card">
+                <h2 id="igEndTitle"></h2>
+                <p id="igEndMsg"></p>
+                <div class="ig-stats">
+                    <div class="ig-stat score"><b id="igEndScore">0</b>pontos</div>
+                    <div class="ig-stat best"><b id="igEndBest">0</b>recorde</div>
+                    <div class="ig-stat"><b id="igEndHits">0</b>acertos</div>
+                    <div class="ig-stat"><b id="igEndErrors">0</b>erros</div>
+                </div>
+                <div class="ig-actions">
+                    <button type="button" class="ig-btn" id="igAgainBtn">jogar de novo</button>
+                    <a href="<?= $arcadeUrl ?>" class="ig-btn alt">início</a>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Placeholder: o modo infinito ainda não foi construído -->
-    <div class="progress-section" style="text-align:center; margin-top:40px;">
-        <p class="progress-label"><i class="bi bi-infinity"></i> em breve!</p>
-        <p>o modo infinito já está liberado para você, mas ainda estamos preparando as contas.</p>
-    </div>
-</main>
+<?php include __DIR__ . '/../settings/_overlay.php'; ?>
+
+<script>
+    window.INFINITE_CONFIG = <?= json_encode($jsConfig, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+</script>
+<script src="<?= BASE_URL ?>/assets/js/infinite.js"></script>
 
 <?php include __DIR__ . '/../footer.php'; ?>

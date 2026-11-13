@@ -808,6 +808,33 @@ input[type="range"].custom-slider::-moz-range-thumb {
     display: block;
 }
 
+/* Arcade: sem barra de progresso, então centraliza os jogos no meio da tela */
+.level-select-page.arcade-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.arcade-page .levels-grid {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.arcade-page .level-card {
+    justify-content: center;
+    gap: 18px;
+    padding: 15px 10px;
+}
+
+.arcade-page .level-symbol {
+    margin-bottom: 0;
+}
+
+.arcade-page .level-title {
+    margin-bottom: 0;
+}
+
 /* Overlay do Cadeado */
 .lock-overlay {
     position: absolute;

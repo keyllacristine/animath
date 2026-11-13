@@ -68,20 +68,51 @@ class GameController
         require '../app/views/game/levels.php';
     }
 
-    // Modo infinito: só abre depois de concluir todos os níveis (admin pode abrir pra testar).
-    // Por enquanto não tem conteúdo — a view é só um aviso.
-    public function infinite()
+    public function arcade()
     {
-        $this->requireLogin();
+        $this->requireArcade();
 
-        $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
+        $quizConfig = require __DIR__ . '/../../config/quiz.php';
+        $arcadeTitle = $quizConfig['arcade']['title'];
 
-        if (!$isAdmin && !$this->progress->hasCompletedAll((int) $_SESSION['user_id'])) {
-            header('Location: ' . BASE_URL . '/levels');
+        require __DIR__ . '/../views/arcade/index.php';
+    }
+
+    public function arcadeGame(string $slug)
+    {
+        $this->requireArcade();
+
+        $quizConfig = require __DIR__ . '/../../config/quiz.php';
+
+        $games = [
+            'chuva'   => ['game/infinite.php', $quizConfig['infinite']],
+            'sudoku'  => ['arcade/sudoku.php', $quizConfig['arcade']['sudoku']],
+            'memoria' => ['arcade/memory.php', $quizConfig['arcade']['memory']],
+            'balanca' => ['arcade/balance.php', $quizConfig['arcade']['balance']],
+        ];
+
+        $slug = trim($slug, '/');
+
+        if (!isset($games[$slug])) {
+            header('Location: ' . BASE_URL . '/game/arcade');
             exit;
         }
 
-        require '../app/views/game/infinite.php';
+        [$view, $gameConfig] = $games[$slug];
+
+        $avatars = require __DIR__ . '/../../config/avatars.php';
+        $avatar = (int) ($_SESSION['avatar'] ?? 1);
+        if (!isset($avatars[$avatar])) {
+            $avatar = array_key_first($avatars);
+        }
+        $gender = $avatars[$avatar]['gender'];
+        $username = (string) ($_SESSION['username'] ?? '');
+        $arcadeUrl = BASE_URL . '/game/arcade';
+
+        $infinite = $gameConfig;
+        $arcadeCfg = $gameConfig + ['key' => $slug, 'username' => $username, 'gender' => $gender];
+
+        require __DIR__ . '/../views/' . $view;
     }
 
     // Chamado pelo JS (vn-quiz.js) quando o quiz do nível termina
@@ -156,6 +187,18 @@ class GameController
         }
 
         return false;
+    }
+
+    private function requireArcade()
+    {
+        $this->requireLogin();
+
+        $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
+
+        if (!$isAdmin && !$this->progress->hasCompletedAll((int) $_SESSION['user_id'])) {
+            header('Location: ' . BASE_URL . '/levels');
+            exit;
+        }
     }
 
     private function requireLogin()

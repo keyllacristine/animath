@@ -1,7 +1,8 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php $isLoggedIn = isset($_SESSION['user_id']);
+$arcadeTitle = (require __DIR__ . '/../../../config/quiz.php')['arcade']['title'];
 
-// Modo infinito só libera depois de concluir todos os níveis (admin vê liberado pra testar)
+// Modo arcade só libera depois de concluir todos os níveis (admin vê liberado pra testar)
 $infiniteUnlocked = $isLoggedIn && (
     ($_SESSION['role'] ?? '') === 'admin'
     || (new Progress($db))->hasCompletedAll((int) $_SESSION['user_id'])
@@ -38,11 +39,11 @@ $bgImage = $isLoggedIn
             </div>
              <div>
                 <?php if ($infiniteUnlocked): ?>
-                <a href="<?= BASE_URL ?>/game/infinite">
-                    <button type="button" onclick="soundManager.playClickSound()">Modo infinito <i class="bi bi-infinity"></i></button>
+                <a href="<?= BASE_URL ?>/game/arcade">
+                    <button type="button" onclick="soundManager.playClickSound()"><?= htmlspecialchars($arcadeTitle) ?> <i class="bi bi-controller"></i></button>
                 </a>
                 <?php else: ?>
-                <button type="button" class="is-locked" disabled title="conclua todos os níveis para liberar">Modo infinito <i class="bi bi-lock-fill"></i></button>
+                <button type="button" class="is-locked" disabled title="conclua todos os níveis para liberar"><?= htmlspecialchars($arcadeTitle) ?> <i class="bi bi-lock-fill"></i></button>
                 <?php endif; ?>
             </div>
             <div>
