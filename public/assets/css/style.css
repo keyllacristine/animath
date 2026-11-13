@@ -1054,3 +1054,7 @@ input[type="range"].custom-slider::-moz-range-thumb {
     cursor: pointer;
 }
 .settings-close:hover { transform: scale(1.05); }
+
+
+/* botão de engrenagem (abre o overlay de configurações) */
+button.btn-circle { padding: 0; cursor: pointer; font-family: inherit; }

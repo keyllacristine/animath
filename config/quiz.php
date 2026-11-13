@@ -57,7 +57,7 @@ return [
             'bonusPerSecond' => 2,
         ],
         'memory'  => [
-            'time'          => 60,
+            'time'          => 30,
             'ops'           => ['+', '-', '*', '/'],
             'revealSeconds' => 5,
             'revealMin'     => 2.5,
