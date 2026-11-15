@@ -9,9 +9,9 @@
         
         <h1 class="page-title">Níveis</h1>
         
-        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
+        <button type="button" class="btn-circle btn-settings" title="Configurações" aria-label="Abrir configurações" onclick="window.openSettings()">
             <i class="bi bi-gear-fill"></i>
-        </a>
+        </button>
     </div>
 
     <?php 
@@ -118,4 +118,5 @@
     </div>
 </main>
 
+<?php include __DIR__ . '/../settings/_overlay.php'; ?>
 <?php include __DIR__ . '/../footer.php'; ?>

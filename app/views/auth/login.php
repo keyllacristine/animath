@@ -7,9 +7,9 @@
         <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
             <i class="bi bi-reply-fill"></i>
         </a>        
-        <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
+        <button type="button" class="btn-circle btn-settings" title="Configurações" aria-label="Abrir configurações" onclick="window.openSettings()">
             <i class="bi bi-gear-fill"></i>
-        </a>
+        </button>
     </div>
         <form action="<?= BASE_URL ?>/login" method="POST" class="login">
         <div class="form login">
@@ -34,3 +34,4 @@
             </div>
         </form>        
     <div>
+<?php include __DIR__ . '/../settings/_overlay.php'; ?>
