@@ -29,7 +29,7 @@
             </fieldset>
         </div>
             <div class="form login">
-                <img src="<?= BASE_URL ?>/assets/img/login.png" class="login-art" alt="Ilustração dos bichinhos do Animath" width="300" >
+                <img src="<?= BASE_URL ?>/assets/img/animath_logo.png" class="login-art" alt="Ilustração dos bichinhos do Animath" width="300" >
                 <button type="submit" class="btn lets-learn">Vamos aprender! &rarr;</button>
             </div>
         </form>        

@@ -9,23 +9,21 @@
     </div>
 
     <?php 
-    // Array com a lista de desenvolvedores
     $developers = [
-        ['img' => 'dev1.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
-        ['img' => 'dev2.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
-        ['img' => 'dev3.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
-        ['img' => 'dev4.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
-        ['img' => 'dev5.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
-        ['img' => 'dev6.png', 'name' => 'nome', 'role' => "papel no\ndesenvolvimento"],
+        ['img' => 'dev1.png', 'name' => 'keylla', 'role' => "arte/conceito \nprogramação"],
+        ['img' => 'dev2.png', 'name' => 'luiza', 'role' => "programação \ngame-design"],
+        ['img' => 'dev3.png', 'name' => 'rodrigo', 'role' => "documentação \npesquisa"],
+        ['img' => 'dev4.png', 'name' => 'julia', 'role' => "documentação no\npesquisa"],
+        ['img' => 'dev5.png', 'name' => 'laura', 'role' => "documentação\nbanco de dados"],
+        ['img' => 'dev6.png', 'name' => 'evilly', 'role' => "documentação \nbanco de dados"],
     ];
     ?>
-
     <!-- Grid de Desenvolvedores (3 colunas x 2 linhas) -->
     <div class="devs-grid">
         <?php foreach ($developers as $dev): ?>
             <article class="dev-card">
                 <div class="dev-avatar">
-                    <img src="<?= BASE_URL ?>/assets/images/<?= htmlspecialchars($dev['img']) ?>" alt="<?= htmlspecialchars($dev['name']) ?>">
+                    <img src="<?= BASE_URL ?>/assets/img/devs/<?= htmlspecialchars($dev['img']) ?>" alt="<?= htmlspecialchars($dev['name']) ?>">
                 </div>
                 <h3 class="dev-name"><?= htmlspecialchars($dev['name']) ?></h3>
                 <p class="dev-role"><?= nl2br(htmlspecialchars($dev['role'])) ?></p>

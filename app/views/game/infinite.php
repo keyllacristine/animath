@@ -1,9 +1,17 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php
 $sprite = BASE_URL . '/assets/img/vn/chars/av' . (int) $avatar . '.png';
+// Ícones de vida (HP): se os arquivos existirem em public/assets/img/, o jogo usa as imagens;
+// senão continua com os corações de texto (♥ / ♡).
+$imgDir = __DIR__ . '/../../../public/assets/img/';
+$lifeFull  = is_file($imgDir . 'vida.png')       ? BASE_URL . '/assets/img/vida.png'       : '';
+$lifeEmpty = is_file($imgDir . 'vida_vazia.png') ? BASE_URL . '/assets/img/vida_vazia.png' : '';
+
 $jsConfig = $infinite + [
-    'gender'   => $gender,
-    'username' => $username,
+    'gender'    => $gender,
+    'username'  => $username,
+    'lifeFull'  => $lifeFull,
+    'lifeEmpty' => $lifeEmpty,
 ];
 ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/infinite.css">

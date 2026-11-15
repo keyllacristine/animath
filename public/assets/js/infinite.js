@@ -12,6 +12,9 @@
     const BEST_KEY = 'animath_infinite_best_' + (cfg.username || 'visitante');
     const OPS = (cfg.ops || []).filter((o) => SYMBOL[o]);
 
+    // imagens de vida (opcional): lifeFull = coração cheio, lifeEmpty = vazio (sem ela, usa a cheia apagada)
+    const LIFE = { full: cfg.lifeFull || '', empty: cfg.lifeEmpty || '' };
+
     const $ = (id) => document.getElementById(id);
     const stage = $('igStage');
     const field = $('igField');
@@ -131,13 +134,30 @@
         retrigger(questionEl, 'swap', 400);
     }
 
+    // um ícone de vida: imagem (se configurada) ou o coração de texto
+    function lifeIcon(full) {
+        const textHeart = () => {
+            const h = document.createElement('span');
+            h.textContent = full ? '♥' : '♡';
+            h.className = full ? 'full' : 'empty';
+            return h;
+        };
+        const src = full ? LIFE.full : (LIFE.empty || LIFE.full);
+        if (!src) return textHeart();
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.className = full ? 'full' : 'empty';
+        if (!full && !LIFE.empty) img.classList.add('dim');          // sem imagem de vida vazia: cheia apagada
+        img.addEventListener('error', () => img.replaceWith(textHeart()));   // arquivo sumiu: volta ao ♥
+        return img;
+    }
+
     function renderLives() {
         livesEl.innerHTML = '';
         for (let i = 0; i < cfg.lives; i++) {
-            const h = document.createElement('span');
-            h.textContent = i < s.lives ? '♥' : '♡';
-            h.className = i < s.lives ? 'full' : 'empty';
-            livesEl.appendChild(h);
+            livesEl.appendChild(lifeIcon(i < s.lives));
         }
     }
 
@@ -165,7 +185,16 @@
     function popup(x, y, text, kind) {
         const p = document.createElement('div');
         p.className = 'ig-pop ' + kind;
-        p.textContent = text;
+        if (LIFE.full && text.includes('♥')) {                       // "−1 ♥" com a imagem de vida
+            p.append(text.replace('♥', '').trim() + ' ');
+            const im = document.createElement('img');
+            im.src = LIFE.full;
+            im.alt = '';
+            im.addEventListener('error', () => im.replaceWith('♥'));
+            p.append(im);
+        } else {
+            p.textContent = text;
+        }
         p.style.left = Math.max(20, Math.min(W - 140, x - 40)) + 'px';
         p.style.top = Math.max(60, y) + 'px';
         field.appendChild(p);

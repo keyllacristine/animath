@@ -211,6 +211,16 @@
 .ig-lives .full { color: #e8527a; }
 .ig-lives .empty { color: rgba(74, 21, 75, 0.45); }
 
+/* ícones de vida em imagem (vida.png / vida_vazia.png) */
+.ig-lives img {
+    height: 46px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 3px 0 rgba(74, 21, 75, 0.25));
+}
+.ig-lives img.dim { opacity: .35; filter: grayscale(1); }
+.ig-pop img { height: 1em; width: auto; vertical-align: -0.12em; }
+
 .ig-score {
     left: 108px;
     top: 76px;
