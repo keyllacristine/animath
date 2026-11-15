@@ -1,6 +1,12 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php
-$sprite = BASE_URL . '/assets/img/vn/chars/av' . (int) $avatar . '.png';
+// Sprites por pose: avatar_1_idle.png, avatar_1_catch.png, avatar_1_good.png, avatar_1_bad.png (idem avatar_2_*)
+$spriteDir = BASE_URL . '/assets/img/vn/chars/';
+$sprites = [];
+foreach (['idle', 'catch', 'good', 'bad'] as $pose) {
+    $sprites[$pose] = $spriteDir . 'avatar_' . (int) $avatar . '_' . $pose . '.png';
+}
+$sprite = $sprites['idle'];
 // Ícones de vida (HP): se os arquivos existirem em public/assets/img/, o jogo usa as imagens;
 // senão continua com os corações de texto (♥ / ♡).
 $imgDir = __DIR__ . '/../../../public/assets/img/';
@@ -12,6 +18,7 @@ $jsConfig = $infinite + [
     'username'  => $username,
     'lifeFull'  => $lifeFull,
     'lifeEmpty' => $lifeEmpty,
+    'sprites'   => $sprites,
 ];
 ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/infinite.css">

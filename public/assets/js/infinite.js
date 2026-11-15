@@ -59,6 +59,33 @@
     let lastTs = 0;
     const timers = new WeakMap();
 
+    // poses do avatar: idle (parado), catch (encostou no objeto), good / bad (resultado, congela um instante)
+    const SPRITES = cfg.sprites || {};
+    const CATCH_MS = 220;     // tempo no sprite "catch" antes de mostrar o resultado
+    const RESULT_MS = 900;    // tempo congelado em "good" / "bad" antes de voltar ao idle
+    let poseTimer = 0;
+
+    Object.values(SPRITES).forEach((src) => { const im = new Image(); im.src = src; });   // pré-carrega
+
+    function setPose(name) {
+        const src = SPRITES[name];
+        if (src && !rabbitImg.src.endsWith(src.split('/').pop())) rabbitImg.src = src;
+    }
+
+    function reactPose(result) {                 // result: 'good' | 'bad'
+        clearTimeout(poseTimer);
+        setPose('catch');
+        poseTimer = setTimeout(() => {
+            setPose(result);
+            poseTimer = setTimeout(() => setPose('idle'), RESULT_MS);
+        }, CATCH_MS);
+    }
+
+    function resetPose() {
+        clearTimeout(poseTimer);
+        setPose('idle');
+    }
+
     const rnd = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
     const pick = (list) => list[rnd(0, list.length - 1)];
     const sfx = (name) => { try { window.soundManager?.[name]?.(); } catch (e) { return; } };
@@ -217,6 +244,7 @@
         s.keys.left = false;
         s.keys.right = false;
         flip.style.transform = 'scaleX(1)';
+        resetPose();
         placeRabbit();
         newQuestion();
         renderHud();
@@ -275,6 +303,7 @@
         s.score += cfg.points;
         popup(it.x + ITEM / 2, it.y, '+' + cfg.points, 'good');
         retrigger(rabbit, 'happy', 500);
+        reactPose('good');
         sfx('playCorrectAnswer');
         it.el.classList.add('gone');
         setTimeout(() => it.el.remove(), 250);
@@ -291,6 +320,7 @@
         s.streak = 0;
         popup(it.x + ITEM / 2, it.y, '−1 ♥', 'bad');
         retrigger(rabbit, 'hurt', 500);
+        reactPose('bad');
         retrigger(field, 'shake', 400);
         retrigger($('igFlash'), 'on', 450);
         sfx('playIncorrectAnswer');
