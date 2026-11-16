@@ -1,9 +1,20 @@
 
 const AUDIO_BASE = document.currentScript.src.replace(/js\/audio-manager\.js.*$/, 'audio/');
+function musicTrackForPage() {
+    const path = location.pathname.replace(/\/+$/, '');
+    if (/\/game\/(infinite|arcade)(\/|$)/.test(path)) return 'arcade';
+    if (/\/game$/.test(path)) {
+        const id = new URLSearchParams(location.search).get('id');
+        if (/^\d+$/.test(id || '')) return `level_${id}`;
+    }
+    return 'menu';
+}
+const MUSIC_TRACK = musicTrackForPage();
+const fileOf = (url) => String(url || '').split('/').pop().split('?')[0];
 
 const store = {
     get(key) { try { return localStorage.getItem(key); } catch { return null; } },
-    set(key, value) { try { localStorage.setItem(key, value); } catch {  } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch { } },
 };
 
 class SoundManager {
@@ -46,7 +57,9 @@ class SoundManager {
             audio.id = `audio-${key}`;
             audio.loop = config.loop;
             audio.preload = 'auto';
-            audio.src = `${AUDIO_BASE}${key}.mp3`;   
+            audio.src = key === 'background'
+                ? `${AUDIO_BASE}music/${MUSIC_TRACK}.mp3`          
+                : `${AUDIO_BASE}${key}.mp3`;                        
             this.sounds[key] = audio;
             this._gain = this._gain || {};
             this._gain[key] = config.gain;
@@ -54,18 +67,33 @@ class SoundManager {
         }
 
         const bg = this.sounds['background'];
+        this._wantBg = false;
+        this._newTrack = sessionStorage.getItem('bgFile') !== `${MUSIC_TRACK}.mp3`;
+
+        bg.addEventListener('error', () => {
+            if (bg.dataset.fallback) return;
+            bg.dataset.fallback = '1';
+            bg.src = `${AUDIO_BASE}background.mp3`;
+            bg.load();
+            this._newTrack = sessionStorage.getItem('bgFile') !== 'background.mp3';
+            if (this._wantBg) this.startBackground();
+        });
         bg.addEventListener('loadedmetadata', () => {
             const t = parseFloat(sessionStorage.getItem('bgTime'));
-            if (t && bg.duration) bg.currentTime = t % bg.duration;
+            if (t && bg.duration && sessionStorage.getItem('bgFile') === fileOf(bg.currentSrc || bg.src)) {
+                bg.currentTime = t % bg.duration;
+            }
         });
         window.addEventListener('pagehide', () => {
             sessionStorage.setItem('bgTime', bg.currentTime);
+            sessionStorage.setItem('bgFile', fileOf(bg.currentSrc || bg.src));
         });
     }
 
     _apply(key) {
         const ch = this.channelOf(key);
         const audio = this.sounds[key];
+        if (key === 'background' && this._fadeId) { clearInterval(this._fadeId); this._fadeId = null; }   
         audio.volume = Math.max(0, Math.min(1, this.volume[ch] * this._gain[key]));
         audio.muted = this.muted[ch];
     }
@@ -76,12 +104,10 @@ class SoundManager {
         }
     }
 
-    /* ------------------------------------------------------------ configuração */
 
     getVolume(ch) { return this.volume[ch]; }
     isChannelMuted(ch) { return this.muted[ch]; }
 
-    /** ch = 'music' | 'fx'; v = 0–1. Salva e aplica na hora. */
     setVolume(ch, v) {
         this.volume[ch] = Math.max(0, Math.min(1, Number(v) || 0));
         store.set(ch === 'music' ? 'musicVolume' : 'fxVolume', this.volume[ch]);
@@ -96,7 +122,6 @@ class SoundManager {
 
     toggleMuted(ch) { this.setMuted(ch, !this.muted[ch]); }
 
-    /** true se os efeitos vão ser ouvidos (usado para adiar a navegação só quando há som) */
     get fxAudible() { return !this.muted.fx && this.volume.fx > 0; }
 
    
@@ -117,10 +142,9 @@ class SoundManager {
 
             slider.addEventListener('input', () => {
                 this.setVolume(ch, slider.value / 100);
-                if (this.muted[ch] && this.volume[ch] > 0) this.setMuted(ch, false);   // mexeu no volume = quer ouvir
+                if (this.muted[ch] && this.volume[ch] > 0) this.setMuted(ch, false);   
                 group._sync();
             });
-            // ao soltar o slider dos efeitos, toca um clique para a pessoa ouvir o volume
             if (ch === 'fx') slider.addEventListener('change', () => this.play('click'));
 
             muteBtn?.addEventListener('click', () => {
@@ -135,7 +159,6 @@ class SoundManager {
 
     syncControls() { this._groups.forEach((g) => g._sync()); }
 
-    /* ---------------------------------------------------------------- reprodução */
 
     play(soundKey) {
         const audio = this.sounds[soundKey];
@@ -153,7 +176,7 @@ class SoundManager {
         }
 
         audio.currentTime = 0;
-        const promise = audio.play();  
+        const promise = audio.play();   
         if (promise !== undefined) {
             promise.catch((error) => console.warn(`Erro ao tocar ${soundKey}:`, error));
         }
@@ -168,7 +191,26 @@ class SoundManager {
 
     startBackground() {
         sessionStorage.setItem('bgOn', '1');
+        this._wantBg = true;
+        if (this._newTrack) {
+            this._newTrack = false;
+            this._fadeInBg();
+        }
         this.sounds['background'].play().catch(() => {});
+    }
+
+    _fadeInBg() {
+        const bg = this.sounds['background'];
+        const target = Math.max(0, Math.min(1, this.volume.music * this._gain.background));
+        if (this.muted.music || target <= 0) return;
+        bg.volume = 0;
+        let v = 0;
+        clearInterval(this._fadeId);
+        this._fadeId = setInterval(() => {
+            v += target / 14;
+            if (v >= target) { bg.volume = target; clearInterval(this._fadeId); this._fadeId = null; }
+            else bg.volume = v;
+        }, 50);
     }
 
     stopBackground() {
@@ -191,7 +233,6 @@ class SoundManager {
 }
 
 const soundManager = new SoundManager();
-
 window.soundManager = soundManager;
 
 
@@ -205,7 +246,7 @@ window.soundManager = soundManager;
     document.addEventListener('keydown', unlock);
     if (sessionStorage.getItem('bgOn') === '1') soundManager.startBackground();
 
-  
+    
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
         const btn = e.target.closest('button');

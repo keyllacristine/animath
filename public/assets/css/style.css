@@ -898,6 +898,14 @@ input[type="range"].custom-slider::-moz-range-thumb {
     padding: 20px;
 }
 
+.dev-title{
+    font-size: 2.5rem;
+    color: var(--purple-dark);
+    font-weight: bold;
+    text-align: center;
+
+}
+
 .top-bar {
     margin-bottom: 20px;
 }
