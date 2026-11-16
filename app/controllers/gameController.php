@@ -24,28 +24,20 @@ class GameController
             exit('Nível não encontrado.');
         }
 
-        // quem tenta abrir um nível bloqueado pela URL volta pra tela de níveis
         if (!$this->isUnlocked($levelId)) {
             header('Location: ' . BASE_URL . '/levels');
             exit;
         }
 
-        // configuração do quiz deste nível (config/quiz.php)
         $quizConfig = require __DIR__ . '/../../config/quiz.php';
         $quiz = $quizConfig[$levelId] ?? $quizConfig['default'];
         $finale = $quizConfig['finale'] ?? [];
 
-        // Cena de ARMAÇÃO da operação do nível (database/vn_armacao.sql): toca depois da explicação
-        // e também pode ser reaberta pelo botão "armar a conta" durante o quiz.
         $armacaoNames = ['+' => 'adicao', '-' => 'subtracao', '*' => 'multiplicacao', '/' => 'divisao'];
         $armacao = isset($armacaoNames[$quiz['op'] ?? '']) ? 'armacao_' . $armacaoNames[$quiz['op']] : '';
 
-        // Já concluiu o jogo todo? Então as cenas começam na parte 2 (explicação)
-        // e aparece o botão de pular direto para as contas.
         $replay = $this->progress->hasCompletedAll((int) $_SESSION['user_id']);
 
-        // Prólogo ('intro'): só na 1ª vez no nível 1 (enquanto o nível 1 não foi concluído).
-        // Epílogo ('level_N_outro'): cena depois do quiz, só na jornada normal (não na reentrada).
         $firstLevelId = (int) ($this->level->findAll()[0]['id'] ?? 0);
         $thisDone = false;
         foreach ($this->progress->findByUser((int) $_SESSION['user_id']) as $p) {
@@ -56,7 +48,6 @@ class GameController
         $prologue = ($levelId === $firstLevelId && !$thisDone && !$replay) ? 'intro' : '';
         $outro    = $replay ? '' : 'level_' . $levelId . '_outro';
 
-        // Avatar da conta (1 ou 2) e gênero correspondente (config/avatars.php)
         $avatars = require __DIR__ . '/../../config/avatars.php';
         $avatar = (int) ($_SESSION['avatar'] ?? 1);
         if (!isset($avatars[$avatar])) {
@@ -155,13 +146,12 @@ class GameController
 
         echo json_encode([
             'success'       => true,
-            'finale'        => $allDone && !$wasAllDone,   // acabou de zerar o jogo → mensagem final
+            'finale'        => $allDone && !$wasAllDone,   
             'next_level_id' => $nextLevelId,
         ]);
     }
 
-    // Mesma regra da tela de níveis: só abre se o nível anterior foi concluído.
-    // Admin pode abrir qualquer nível (pra testar).
+
     private function isUnlocked(int $levelId): bool
     {
         

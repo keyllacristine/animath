@@ -1,4 +1,4 @@
-<?php /* Controles de volume/mudo — usados em /settings e no overlay do jogo. Ligados por soundManager.bindControls() */ ?>
+<?php  ?>
 <div class="sound-controls">
     <div class="control-group" data-channel="music">
         <button type="button" class="sound-icon sound-toggle" data-mute title="Silenciar / ativar música" aria-label="Silenciar ou ativar a música">

@@ -12,7 +12,6 @@
     const BEST_KEY = 'animath_infinite_best_' + (cfg.username || 'visitante');
     const OPS = (cfg.ops || []).filter((o) => SYMBOL[o]);
 
-    // imagens de vida (opcional): lifeFull = coração cheio, lifeEmpty = vazio (sem ela, usa a cheia apagada)
     const LIFE = { full: cfg.lifeFull || '', empty: cfg.lifeEmpty || '' };
 
     const $ = (id) => document.getElementById(id);
@@ -59,20 +58,19 @@
     let lastTs = 0;
     const timers = new WeakMap();
 
-    // poses do avatar: idle (parado), catch (encostou no objeto), good / bad (resultado, congela um instante)
     const SPRITES = cfg.sprites || {};
-    const CATCH_MS = 220;     // tempo no sprite "catch" antes de mostrar o resultado
-    const RESULT_MS = 900;    // tempo congelado em "good" / "bad" antes de voltar ao idle
+    const CATCH_MS = 220;     
+    const RESULT_MS = 900;    
     let poseTimer = 0;
 
-    Object.values(SPRITES).forEach((src) => { const im = new Image(); im.src = src; });   // pré-carrega
+    Object.values(SPRITES).forEach((src) => { const im = new Image(); im.src = src; });   
 
     function setPose(name) {
         const src = SPRITES[name];
         if (src && !rabbitImg.src.endsWith(src.split('/').pop())) rabbitImg.src = src;
     }
 
-    function reactPose(result) {                 // result: 'good' | 'bad'
+    function reactPose(result) {                 
         clearTimeout(poseTimer);
         setPose('catch');
         poseTimer = setTimeout(() => {
@@ -161,7 +159,6 @@
         retrigger(questionEl, 'swap', 400);
     }
 
-    // um ícone de vida: imagem (se configurada) ou o coração de texto
     function lifeIcon(full) {
         const textHeart = () => {
             const h = document.createElement('span');
@@ -176,8 +173,8 @@
         img.src = src;
         img.alt = '';
         img.className = full ? 'full' : 'empty';
-        if (!full && !LIFE.empty) img.classList.add('dim');          // sem imagem de vida vazia: cheia apagada
-        img.addEventListener('error', () => img.replaceWith(textHeart()));   // arquivo sumiu: volta ao ♥
+        if (!full && !LIFE.empty) img.classList.add('dim');          
+        img.addEventListener('error', () => img.replaceWith(textHeart()));   
         return img;
     }
 
@@ -212,7 +209,7 @@
     function popup(x, y, text, kind) {
         const p = document.createElement('div');
         p.className = 'ig-pop ' + kind;
-        if (LIFE.full && text.includes('♥')) {                       // "−1 ♥" com a imagem de vida
+        if (LIFE.full && text.includes('♥')) {                       
             p.append(text.replace('♥', '').trim() + ' ');
             const im = document.createElement('img');
             im.src = LIFE.full;

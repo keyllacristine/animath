@@ -1,4 +1,4 @@
-<?php /* Configurações como overlay (não sai da tela do jogo). Abre com window.openSettings(). */ ?>
+<?php ?>
 <div id="settings-overlay" class="settings-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="settings-overlay-title">
     <section class="settings-card">
         <button type="button" class="settings-close" id="settings-close" title="Fechar" aria-label="Fechar configurações">
@@ -17,7 +17,7 @@
     window.openSettings = () => {
         soundManager.syncControls();
         overlay.hidden = false;
-        document.body.classList.add('modal-open');   // a VN ignora Enter/Espaço enquanto aberto
+        document.body.classList.add('modal-open');   
         document.getElementById('settings-close').focus();
     };
     window.closeSettings = () => {
@@ -26,7 +26,7 @@
     };
 
     document.getElementById('settings-close').addEventListener('click', window.closeSettings);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeSettings(); });   // clicou fora do cartão
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeSettings(); });    
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !overlay.hidden) window.closeSettings(); });
 })();
 </script>

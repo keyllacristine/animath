@@ -1,8 +1,6 @@
 
 <?php include __DIR__ . '/../header.php'; ?>
 <?php
-// Vêm do GameController::show():
-// $level, $quiz, $armacao, $finale, $replay, $prologue, $outro, $avatar, $gender, $username
 
 $levelId = (int) $level['id'];
 $slug = 'level_' . $levelId . '_intro';
@@ -20,7 +18,6 @@ $slug = 'level_' . $levelId . '_intro';
 <?php include __DIR__ . '/../settings/_overlay.php'; ?>
 
 <?php if ($replay): ?>
-    <!-- Quem já zerou o jogo pode pular a explicação e ir pras contas -->
     <button type="button" class="vn-btn" id="vn-skip"
             style="position:fixed;left:16px;bottom:16px;z-index:10001">
         <?= '⏭ pular para as contas' ?>
@@ -49,7 +46,6 @@ $slug = 'level_' . $levelId . '_intro';
         assetsBase: BASE + '/assets/img/vn',
         sceneUrl: BASE + '/vn/scene',
 
-        // Avatar da conta: troca imagens ({avatar}) e pronomes ({o|a}) nas falas
         vars: {
             avatar: <?= (int) $avatar ?>,
             gender: <?= json_encode($gender) ?>,
@@ -59,7 +55,6 @@ $slug = 'level_' . $levelId . '_intro';
 
     window.vn = vn;
 
-    // HUD do jogo: voltar e configurações
     const hud = document.createElement('div');
     hud.className = 'game-hud';
     hud.innerHTML = `
@@ -77,7 +72,6 @@ $slug = 'level_' . $levelId . '_intro';
     hud.querySelector('.hud-settings').addEventListener('click', () => window.openSettings());
 
     hud.querySelector('.hud-back').addEventListener('click', () => {
-        // Saiu no meio do quiz: as respostas ainda não foram salvas
         if (quizStarted && !quizFinished && !confirm('Sair do nível? As respostas deste quiz não serão salvas.')) return;
 
         setTimeout(() => {
@@ -88,7 +82,6 @@ $slug = 'level_' . $levelId . '_intro';
     let quizFinished = false;
     let quizStarted = false;
 
-    // Salva o progresso no servidor
     async function saveProgress({ hits, errors }) {
         const res = await fetch(BASE + '/game/complete', {
             method: 'POST',
@@ -106,7 +99,6 @@ $slug = 'level_' . $levelId . '_intro';
         return data;
     }
 
-    // Mensagem final
     let quiz = null;
 
     function showFinalCard() {
@@ -132,7 +124,6 @@ $slug = 'level_' . $levelId . '_intro';
         }
     }
 
-    // Transição para a tela de níveis
     const goLevels = () => {
         window.location.href = BASE + '/levels';
     };
@@ -151,7 +142,6 @@ $slug = 'level_' . $levelId . '_intro';
         }
     }
 
-    // Armação opcional
     let helpMode = false;
 
     function closeHelp() {
@@ -179,7 +169,6 @@ $slug = 'level_' . $levelId . '_intro';
         }
     }
 
-    // Fluxo do nível: prólogo → cena → quiz → conclusão
     function startQuiz() {
         if (quizStarted) return;
 
@@ -206,7 +195,6 @@ $slug = 'level_' . $levelId . '_intro';
 
     vn.on('end', (scene) => {
         if (scene.slug === PROLOGUE) {
-            // Próximo passo: cena do nível
             vn.play(SLUG).catch(async () => {
                 await vn.play({
                     slug: SLUG,
@@ -219,7 +207,6 @@ $slug = 'level_' . $levelId . '_intro';
             });
         }
         else if (scene.slug === SLUG) {
-            // Primeira vez: cena de armação antes do quiz
             if (ARMACAO && !REPLAY) {
                 vn.play(ARMACAO).catch(startQuiz);
             } else {
@@ -246,12 +233,10 @@ $slug = 'level_' . $levelId . '_intro';
             try {
                 await vn.play(PROLOGUE);
             } catch {
-                // Sem prólogo cadastrado: segue direto
             }
         }
 
         if (!PROLOGUE || !vn.scene) {
-            // Reentrada: começa na parte 2, sem o contexto geral
             const scene = await vn.loadScene(SLUG);
 
             await vn.play(scene, {
@@ -259,7 +244,6 @@ $slug = 'level_' . $levelId . '_intro';
             });
         }
     } catch (err) {
-        // Cena ainda não existe: começa vazia
         await vn.play({
             slug: SLUG,
             level_id: LEVEL_ID,
@@ -268,7 +252,6 @@ $slug = 'level_' . $levelId . '_intro';
         });
     }
 
-    // Nível sem cena cadastrada: vai direto para o quiz
     if (!vn.scene.lines.length) {
         startQuiz();
     }

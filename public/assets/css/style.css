@@ -85,13 +85,12 @@ input{
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centraliza na vertical */
-    align-items: flex-start;  /* Mantém encostado/alinhado à esquerda */
-    padding-left: 50px;       /* Distância da borda esquerda da tela */
+    justify-content: center; 
+    align-items: flex-start;  
+    padding-left: 50px;       
     box-sizing: border-box;
 }
 
-/* Largura e alinhamento do bloco do menu */
 .sidebar-logado {
     display: flex;
     flex-direction: column;
@@ -808,7 +807,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     display: block;
 }
 
-/* Arcade: sem barra de progresso, então centraliza os jogos no meio da tela */
 .level-select-page.arcade-page {
     min-height: 100vh;
     display: flex;
@@ -835,15 +833,13 @@ input[type="range"].custom-slider::-moz-range-thumb {
     margin-bottom: 0;
 }
 
-/* Overlay do Cadeado */
 .lock-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.596); /* Escurece suavemente o card bloqueado */
-    display: flex;
+    background-color: rgba(255, 255, 255, 0.596); 
     justify-content: center;
     align-items: center;
     border-radius: 25px;
@@ -855,7 +851,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     object-fit: contain;
 }
 
-/* Barra de Progresso do Jogador */
 .progress-section {
     width: 100%;
     margin-top: 10px;
@@ -886,12 +881,10 @@ input[type="range"].custom-slider::-moz-range-thumb {
     transition: width 0.4s ease-in-out;
 }
 
-/* Jogo concluído: barra cheia em verde */
 .progress-bar-fill.done {
     background-color: #6fbf86;
 }
 
-/* Botão bloqueado do menu (modo infinito antes de concluir os níveis) */
 .nav.logado button.is-locked,
 .nav.logado button:disabled {
     opacity: .55;
@@ -899,7 +892,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     filter: grayscale(.3);
 }
 
-/* Layout da Página de Desenvolvedores */
 .developers-page {
     max-width: 1000px;
     margin: 0 auto;
@@ -910,7 +902,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     margin-bottom: 20px;
 }
 
-/* Botão Voltar Circular */
 .btn-circle {
     display: inline-flex;
     align-items: center;
@@ -931,7 +922,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     transform: scale(1.05);
 }
 
-/* Grid 3 colunas x 2 linhas */
 .devs-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -940,7 +930,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     align-items: center;
 }
 
-/* Card do Desenvolvedor */
 .dev-card {
     width: 100%;
     max-width: 260px;
@@ -956,7 +945,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     justify-content: flex-start;
 }
 
-/* Container do Avatar Circular */
 .dev-avatar {
     width: 100px;
     height: 100px;
@@ -975,7 +963,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     border-radius: 50%;
 }
 
-/* Textos do Card */
 .dev-name {
     font-size: 2rem;
     font-weight: bold;
@@ -992,7 +979,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
     line-height: 1.2;
 }
 
-/* ---------- ícone de som clicável (mudo) ---------- */
 .sound-toggle {
     position: relative;
     background: none;
@@ -1002,7 +988,7 @@ input[type="range"].custom-slider::-moz-range-thumb {
     line-height: 1;
 }
 .control-group.is-muted .sound-toggle i { opacity: .4; }
-.control-group.is-muted .sound-toggle::after {   /* risco diagonal = mudo */
+.control-group.is-muted .sound-toggle::after {   
     content: '';
     position: absolute;
     left: 50%;
@@ -1016,7 +1002,6 @@ input[type="range"].custom-slider::-moz-range-thumb {
 }
 .control-group.is-muted .custom-slider { opacity: .5; }
 
-/* ---------- configurações como overlay (dentro do jogo) ---------- */
 .settings-overlay {
     position: fixed;
     inset: 0;
@@ -1055,5 +1040,4 @@ input[type="range"].custom-slider::-moz-range-thumb {
 .settings-close:hover { transform: scale(1.05); }
 
 
-/* botão de engrenagem (abre o overlay de configurações) */
 button.btn-circle { padding: 0; cursor: pointer; font-family: inherit; }

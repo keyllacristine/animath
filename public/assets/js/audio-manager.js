@@ -1,16 +1,9 @@
-// /public/assets/js/audio-manager.js
-//
-// Dois canais independentes, cada um com volume (0–1) e mudo, salvos no localStorage:
-//   música  -> 'background'
-//   efeitos -> 'correct', 'incorrect', 'levelComplete', 'levelUnlock', 'click'
-// As telas de configuração ligam os controles com soundManager.bindControls(elemento).
 
-// pasta dos áudios = ../audio/ em relação a este arquivo (.../assets/js/audio-manager.js)
 const AUDIO_BASE = document.currentScript.src.replace(/js\/audio-manager\.js.*$/, 'audio/');
 
 const store = {
     get(key) { try { return localStorage.getItem(key); } catch { return null; } },
-    set(key, value) { try { localStorage.setItem(key, value); } catch { /* modo privado: ignora */ } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch {  } },
 };
 
 class SoundManager {
@@ -39,7 +32,6 @@ class SoundManager {
     channelOf(key) { return key === 'background' ? 'music' : 'fx'; }
 
     initAudio() {
-        // gain = volume relativo de cada som (o volume final = gain × volume do canal)
         const audioConfig = {
             'background':    { gain: 1,    loop: true },
             'correct':       { gain: 1,    loop: false },
@@ -54,14 +46,13 @@ class SoundManager {
             audio.id = `audio-${key}`;
             audio.loop = config.loop;
             audio.preload = 'auto';
-            audio.src = `${AUDIO_BASE}${key}.mp3`;   // funciona com o projeto em qualquer subpasta
+            audio.src = `${AUDIO_BASE}${key}.mp3`;   
             this.sounds[key] = audio;
             this._gain = this._gain || {};
             this._gain[key] = config.gain;
             this._apply(key);
         }
 
-        // a música volta do ponto onde parou na página anterior (cada página recarrega o JS)
         const bg = this.sounds['background'];
         bg.addEventListener('loadedmetadata', () => {
             const t = parseFloat(sessionStorage.getItem('bgTime'));
@@ -108,13 +99,7 @@ class SoundManager {
     /** true se os efeitos vão ser ouvidos (usado para adiar a navegação só quando há som) */
     get fxAudible() { return !this.muted.fx && this.volume.fx > 0; }
 
-    /**
-     * Liga os controles de uma tela de configurações. Marcação esperada:
-     *   <div data-channel="music|fx">
-     *       <button data-mute>…ícone…</button>
-     *       <input type="range" data-volume min="0" max="100">
-     *   </div>
-     */
+   
     bindControls(root = document) {
         root.querySelectorAll('[data-channel]').forEach((group) => {
             const ch = group.dataset.channel;
@@ -148,7 +133,6 @@ class SoundManager {
         });
     }
 
-    /** Reaplica o estado salvo nos controles (ex.: ao abrir o overlay). */
     syncControls() { this._groups.forEach((g) => g._sync()); }
 
     /* ---------------------------------------------------------------- reprodução */
@@ -162,7 +146,6 @@ class SoundManager {
         const ch = this.channelOf(soundKey);
         if (this.muted[ch] || this.volume[ch] <= 0) return;
 
-        // evita tocar o clique 2x quando o botão e o handler global disparam juntos
         if (soundKey === 'click') {
             const now = performance.now();
             if (now - this.lastClick < 80) return;
@@ -170,7 +153,7 @@ class SoundManager {
         }
 
         audio.currentTime = 0;
-        const promise = audio.play();   // alguns navegadores exigem um gesto do usuário antes
+        const promise = audio.play();  
         if (promise !== undefined) {
             promise.catch((error) => console.warn(`Erro ao tocar ${soundKey}:`, error));
         }
@@ -183,7 +166,6 @@ class SoundManager {
         audio.currentTime = 0;
     }
 
-    // A música continua "tocando" mesmo no mudo (só sem som): ao desmutar volta na hora.
     startBackground() {
         sessionStorage.setItem('bgOn', '1');
         this.sounds['background'].play().catch(() => {});
@@ -208,13 +190,11 @@ class SoundManager {
     playClickSound()     { this.play('click'); }
 }
 
-// Inicializar globalmente
 const soundManager = new SoundManager();
-// 'const' no topo do script NÃO vira window.soundManager — o vn-quiz.js usa window.soundManager
+
 window.soundManager = soundManager;
 
-// Navegadores só liberam som depois de um gesto do usuário: a música começa no 1º clique/tecla.
-// Se já estava tocando na página anterior, tenta retomar na hora (e cai no gesto se for bloqueado).
+
 (function () {
     const unlock = () => {
         if (sessionStorage.getItem('bgOn') !== '0') soundManager.startBackground();
@@ -225,8 +205,7 @@ window.soundManager = soundManager;
     document.addEventListener('keydown', unlock);
     if (sessionStorage.getItem('bgOn') === '1') soundManager.startBackground();
 
-    // Clique em botão/link: toca o som e adia a navegação ~150 ms, senão a página
-    // troca antes do som sair.
+  
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href]');
         const btn = e.target.closest('button');

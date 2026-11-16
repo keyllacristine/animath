@@ -1,7 +1,6 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
 <main class="developers-page">
-    <!-- Botão Voltar -->
     <div class="top-bar">
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-back" title="Voltar">
             <i class="bi bi-reply-fill"></i>
@@ -18,7 +17,6 @@
         ['img' => 'dev6.JPEG', 'name' => 'evilly', 'role' => "documentação \nbanco de dados"],
     ];
     ?>
-    <!-- Grid de Desenvolvedores (3 colunas x 2 linhas) -->
     <div class="devs-grid">
         <?php foreach ($developers as $dev): ?>
             <article class="dev-card">

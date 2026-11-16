@@ -1,10 +1,3 @@
-/* /public/assets/css/vn-quiz.css
-   Visual do quiz (protótipo): card creme, 4 opções em grade 2x2,
-   mascote com balão de fala. Tudo em cqw, então escala com a tela 16:9.
-   O style.css tem regras globais (* { font-size; color }, button { border: 6px }),
-   por isso o tamanho de fonte é definido explicitamente. */
-
-/* Durante o quiz some a caixa de diálogo e os personagens da VN; o fundo fica. */
 
 :root {
   --purple-dark: #4A154B;      
@@ -133,26 +126,25 @@
     background: var(--light-cyan, #B7F9F7);
 }
 
-/* ---------- mascote + balão ---------- */
 .vq-mascot {
     position: absolute;
     right: 1.5cqw;
     bottom: 0;
     width: 26cqw;
-    height: 18cqw;            /* só a METADE de cima do sprite aparece, espiando no canto */
+    height: 18cqw;            
     pointer-events: none;
 }
 .vq-mascot img {
     position: absolute;
     right: 0;
     bottom: 20%;
-    height: 36cqw;            /* sprite inteiro = 2× a parte visível */
+    height: 36cqw;            
     width: auto;
     display: block;
-    transform: translateY(120%);          /* escondido abaixo da tela */
+    transform: translateY(120%);          
     transition: transform .25s ease;
 }
-.vq-layer.feedback .vq-mascot img { transform: translateY(50%); }   /* metade visível */
+.vq-layer.feedback .vq-mascot img { transform: translateY(50%); }   
 
 .vq-bubble {
     position: absolute;
@@ -175,7 +167,7 @@
     transition: opacity .2s ease, transform .25s ease;
 }
 .vq-layer.feedback .vq-bubble { opacity: 1; transform: none; }
-.vq-bubble::after {          /* rabinho do balão */
+.vq-bubble::after {          
     content: '';
     position: absolute;
     right: 6cqw;
@@ -188,7 +180,7 @@
     transform: rotate(45deg);
 }
 
-/* ---------- botões da conclusão (próximo nível / voltar) ---------- */
+
 .vq-actions {
     display: flex;
     justify-content: center;
@@ -196,7 +188,6 @@
     flex-wrap: wrap;
 }
 
-/* ---------- mensagem final ---------- */
 .vq-end { width: 52cqw; }
 .vq-text {
     font-size: 2.8cqw;
@@ -205,7 +196,6 @@
     margin-bottom: 2.4cqw;
 }
 
-/* ---------- botão "armar a conta" (ajuda durante o quiz) ---------- */
 .vq-help {
     position: absolute;
     left: 1.5cqw;

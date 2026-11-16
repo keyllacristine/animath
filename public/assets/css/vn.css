@@ -1,7 +1,3 @@
-/* /public/assets/css/vn.css
-   Usa as variáveis do style.css (--purple-dark, --light-beige, ...).
-   Atenção: o style.css tem regras globais (* { font-size; color } e button { border: 6px }),
-   por isso tudo aqui define font-size/color explicitamente nos elementos. */
 
 .vn-root[hidden], .vn-editor[hidden], .vn-fab[hidden], .vn-name[hidden] { display: none !important; }
 
@@ -129,7 +125,6 @@ body.vn-editing .vn-root { padding-right: 400px; }
 .vn-fab { position: fixed; right: 16px; bottom: 16px; z-index: 10001; }
 
 
-/* ---------- HUD do jogo: voltar (esq.) e configurações (dir.) ---------- */
 .game-hud { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
 .hud-btn {
     pointer-events: auto;

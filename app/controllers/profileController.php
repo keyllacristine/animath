@@ -13,7 +13,6 @@ class ProfileController
 
     public function index()
     {
-        // Garante que o utilizador está logado
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . BASE_URL . '/login');
             exit;
@@ -21,7 +20,6 @@ class ProfileController
 
         $userId = $_SESSION['user_id'];
 
-        // Processa a atualização do avatar/nome caso seja enviado formulário POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? $_SESSION['username'];
             $avatar = (int) ($_POST['avatar'] ?? $_SESSION['avatar']);
@@ -35,13 +33,10 @@ class ProfileController
             exit;
         }
 
-        // Busca os dados do utilizador no banco
         $userData = $this->user->findById($userId);
 
-        // Busca o progresso do utilizador
         $progressData = $this->progress->findByUser($userId);
 
-        // Calcula o total de acertos e erros acumulados
         $totalHits = 0;
         $totalErrors = 0;
 

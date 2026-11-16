@@ -1,14 +1,11 @@
 <?php include __DIR__ . '/../header.php'; ?>
 <?php
-// Sprites por pose: avatar_1_idle.png, avatar_1_catch.png, avatar_1_good.png, avatar_1_bad.png (idem avatar_2_*)
 $spriteDir = BASE_URL . '/assets/img/vn/chars/';
 $sprites = [];
 foreach (['idle', 'catch', 'good', 'bad'] as $pose) {
     $sprites[$pose] = $spriteDir . 'avatar_' . (int) $avatar . '_' . $pose . '.png';
 }
 $sprite = $sprites['idle'];
-// Ícones de vida (HP): se os arquivos existirem em public/assets/img/, o jogo usa as imagens;
-// senão continua com os corações de texto (♥ / ♡).
 $imgDir = __DIR__ . '/../../../public/assets/img/';
 $lifeFull  = is_file($imgDir . 'vida.png')       ? BASE_URL . '/assets/img/vida.png'       : '';
 $lifeEmpty = is_file($imgDir . 'vida_vazia.png') ? BASE_URL . '/assets/img/vida_vazia.png' : '';

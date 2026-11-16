@@ -1,7 +1,6 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
 <main class="level-select-page">
-    <!-- Cabeçalho -->
     <div class="level-header">
         <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
                         <i class="bi bi-reply-fill"></i>
@@ -15,7 +14,6 @@
     </div>
 
     <?php 
-    // Configurações visuais dos 4 níveis
     $levelConfig = [
         1 => [
             'title' => 'adição',
@@ -47,10 +45,9 @@
     $completedCount = 0;
     ?>
 
-    <!-- Grid de Níveis -->
     <div class="levels-grid">
         <?php 
-        $previousCompleted = true; // 1º nível desbloqueado por padrão
+        $previousCompleted = true; 
 
         foreach ($levels as $index => $level):
             $levelId = (int)$level['id'];
@@ -68,7 +65,6 @@
                 $completedCount++;
             }
 
-            // Bloqueia se o nível anterior não foi concluído
             $isLocked = !$previousCompleted;
             $previousCompleted = $isCompleted;
         ?>
@@ -78,7 +74,6 @@
                    style="background-color: <?= htmlspecialchars($config['bg_color']) ?>;">
                     
                     <?php if (!$isLocked): ?>
-                        <!-- Só exibe as informações se o nível estiver DESBLOQUEADO -->
                         <span class="level-title"><?= htmlspecialchars($config['title']) ?></span>
                         <span class="level-symbol"><?= htmlspecialchars($config['symbol']) ?></span>
                         
@@ -89,7 +84,6 @@
                         <?php endif; ?>
 
                     <?php else: ?>
-                        <!-- Se estiver BLOQUEADO, mostra apenas o overlay com o cadeado -->
                         <div class="lock-overlay">
                             <i class="bi bi-lock-fill"></i>
                         </div>
@@ -102,10 +96,9 @@
 
     <?php 
     $overallProgress = round(($completedCount / $totalLevels) * 100);
-    $gameDone = $completedCount >= $totalLevels;   // jogo todo concluído
+    $gameDone = $completedCount >= $totalLevels;   
     ?>
 
-    <!-- Barra de Progresso -->
     <div class="progress-section">
         <?php if ($gameDone): ?>
             <p class="progress-label">Progresso: <strong>concluído <i class="bi bi-check-circle-fill"></i></strong></p>

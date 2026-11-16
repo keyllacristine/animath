@@ -1,24 +1,3 @@
-// /public/assets/js/vn-popup.js
-// Pop-up didático da visual novel: janelinha em HTML/CSS que aparece durante as falas,
-// revelada PASSO A PASSO (cada fala avança um passo). Sem imagens obrigatórias.
-//
-// Na fala:  "popup": { type: "...", step: N, ... }
-//   - o pop-up PERSISTE de fala em fala; uma fala só com {"step": 3} avança o passo do mesmo pop-up;
-//   - { type: ... } numa fala nova troca o pop-up;  "popup": false  (ou {"hide":true}) fecha.
-//
-// TIPOS
-//   items     objetos para contar. icon: emoji ("🌸") ou src: arquivo em chars/
-//     {type:"items", op:"+", icon:"🌸", groups:[2,3]}              2 + 3 = 5      (passos: 1, 2, 3)
-//     {type:"items", op:"-", icon:"🌸", total:5, remove:2}          5 − 2 = 3      (passos: 1, 2, 3)
-//     {type:"items", op:"*", icon:"🍄", times:3, per:2}             3 grupos de 2  (passos: 1..3, 4 = soma, 5 = ×)
-//     {type:"items", op:"/", icon:"🐟", total:6, parts:3}           6 ÷ 3 = 2      (passos: 1 monte, 2 pratos, 3 divide, 4 conta)
-//   equation  conta grande com o sinal em destaque:  {type:"equation", text:"3 × 2 = 6", mark:"×", caption:"sinal da multiplicação"}
-//   column    ARMAÇÃO da conta, coluna por coluna (vai um, empresta, "chave" da divisão):
-//     {type:"column", op:"+", a:47, b:38}     {type:"column", op:"-", a:52, b:27}
-//     {type:"column", op:"*", a:24, b:3}      {type:"column", op:"/", a:78, b:3}
-//     step 0 = só a conta montada; step 1.. = uma coluna (ou um passo da divisão) por vez.
-//   image     {type:"image", src:"arquivo.gif"}   (pasta img/vn/popup/)
-// Em qualquer tipo: "title" (cabeçalho) e "caption" (legenda embaixo) são opcionais.
 
 (() => {
     const SIGN = { '+': '+', '-': '−', '*': '×', '/': '÷' };
@@ -30,10 +9,6 @@
         return e;
     };
 
-    /* ======================================================================
-     * MODELOS DA ARMAÇÃO — funções puras (testáveis): devolvem células de uma grade.
-     * célula: { r, c, text, step, cls, until, strike }   r/c = linha/coluna (0-based)
-     * ====================================================================== */
 
     function addModel(a, b) {
         const A = digits(a), B = digits(b), S = digits(a + b);
@@ -107,7 +82,7 @@
         B.forEach((d, i) => put(2, cols - B.length + i, d, { cls: 'ln' }));
         put(2, 0, '×', { cls: 'op' });
 
-        if (B.length === 1) {                                          // um dígito: coluna a coluna com "vai"
+        if (B.length === 1) {                                          
             let carry = 0;
             for (let k = 0; k < A.length; k++) {
                 const c = cols - 1 - k;
@@ -124,7 +99,6 @@
             return { rows: 4, cols, cells, active, maxStep: A.length };
         }
 
-        // vários dígitos: produtos parciais (um por passo) e a soma no final
         const m = B.length;
         for (let j = 0; j < m; j++) {
             const part = digits(a * B[m - 1 - j]);
@@ -150,7 +124,7 @@
             steps.push({ i, q, prod, rem });
         }
         const Q = steps.length, w = Math.max(D.length, Q);
-        const cols = 1 + n + w;                                        // sinal | dividendo | divisor/quociente
+        const cols = 1 + n + w;                                        
         const rows = 1 + 2 * Q + 1;
         const cells = [], active = {};
         const put = (r, c, text, o = {}) => cells.push({ r, c, text, step: 0, ...o });
@@ -160,9 +134,8 @@
 
         steps.forEach((st, u) => {
             const step = u + 1;
-            put(1, 1 + n + u, st.q, { step, cls: 'res qt' });            // quociente: linha 1, à direita da chave
-            const pd = digits(st.prod);
-            const endCol = 1 + st.i;                                    // coluna do último dígito do dividendo usado
+            put(1, 1 + n + u, st.q, { step, cls: 'res qt' });            
+            const endCol = 1 + st.i;                                    
             const prodRow = 1 + 2 * u, remRow = 2 + 2 * u;
             pd.forEach((x, i) => put(prodRow, endCol - pd.length + 1 + i, x, { step, cls: 'pr' }));
             put(prodRow, endCol - pd.length, '−', { step, cls: 'op' });
@@ -172,10 +145,6 @@
         });
         return { rows, cols, cells, active, maxStep: Q, div: { n, steps } };
     }
-
-    /* ======================================================================
-     * RENDER
-     * ====================================================================== */
 
     function renderGrid(model, step, prevStep, box) {
         const grid = el('div', 'pop-grid');
@@ -206,7 +175,7 @@
         box.append(grid);
     }
 
-    function eq(parts, step, prevStep) {                               // linha de conta: [{t, step, cls}]
+    function eq(parts, step, prevStep) {                               
         const row = el('div', 'pop-eq');
         for (const p of parts) {
             if (p.step > step) continue;
@@ -305,7 +274,6 @@
         box.append(body);
 
         if (p.type === 'items') {
-            // descobre o último passo antes de usar o padrão (step ausente = tudo visível)
             const probe = el('div');
             const mx = renderItems(p, 99, null, probe, { url });
             step = Math.min(p.step ?? mx, mx);

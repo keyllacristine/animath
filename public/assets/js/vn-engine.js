@@ -1,41 +1,17 @@
-// /public/assets/js/vn-engine.js
-// Engine de visual novel do AniMath.
-//
-// Uma CENA é só um objeto JSON:
-//   { slug: "level_1_intro", title: "...", lines: [ FALA, FALA, ... ] }
-//
-// Uma FALA pode ter:
-//   id       – identificador (gerado automaticamente)
-//   speaker  – nome que aparece na caixinha ("" = sem nome)
-//   text     – texto do diálogo
-//   bg       – (opcional) troca o fundo. "" = mantém o atual
-//   chars    – (opcional) comandos de personagens:
-//              [{ id:"mel", src:"av1.png", pos:"left|center|right", show:true|false }]
-//              campos vazios/ausentes = mantém o que já estava
-//   popup    – (opcional) janelinha didática com passos (ver vn-popup.js). Persiste de fala em fala:
-//              {type:"column", op:"+", a:47, b:38, step:2}   |   {step:3} só avança   |   false fecha
-//   part     – (opcional) 2 = esta fala começa a "parte 2" (explicação). Quem já zerou o jogo
-//              reentra nos níveis direto daqui.
-//
-// VARIÁVEIS (opts.vars) — valem em speaker, text, bg e src:
-//   {avatar}              → 1 ou 2 (avatar da conta).   Ex.: "src":"av{avatar}.png"
-//   {nome}                → nome da conta
-//   {masculino|feminino}  → escolhe pelo gênero do avatar. Ex.: "você está {pronto|pronta}?"
-//
-// O estado (fundo + personagens) PERSISTE de fala em fala, como numa VN de verdade.
+
 
 const vnUid = () => 'l' + Math.random().toString(36).slice(2, 8);
 
 class VNEngine {
     /**
      * @param {Object}   opts
-     * @param {Element}  opts.root        div onde a engine será montada
-     * @param {string}   opts.assetsBase  ex.: '/animath/public/assets/img/vn'
-     * @param {string}   opts.sceneUrl    endpoint GET  ?slug=...
-     * @param {number}   opts.typeSpeed   ms por letra (0 = sem animação)
-     * @param {boolean}  opts.overlay     true = cobre a tela toda (modo "pop-up" de qualquer página)
-     * @param {boolean}  opts.hideOnEnd   esconde a engine ao terminar (padrão: = overlay)
-     * @param {Object}   opts.vars        { avatar: 1|2, gender: 'm'|'f', nome: '...' } (ver VARIÁVEIS acima)
+     * @param {Element}  opts.root        
+     * @param {string}   opts.assetsBase  
+     * @param {string}   opts.sceneUrl   
+     * @param {number}   opts.typeSpeed   
+     * @param {boolean}  opts.overlay    
+     * @param {boolean}  opts.hideOnEnd   
+     * @param {Object}   opts.vars        
      */
     constructor(opts) {
         this.root = opts.root;
@@ -51,7 +27,7 @@ class VNEngine {
         this.scene = null;
         this.index = -1;
         this.state = { bg: null, chars: {}, popup: null };
-        this.stack = [];          // cenas "pausadas" (para insertScene)
+        this.stack = [];          
         this.typing = false;
         this._ended = false;
         this._ev = {};
@@ -64,7 +40,7 @@ class VNEngine {
 
         document.addEventListener('keydown', (e) => {
             if (this.root.hidden || this._ended) return;
-            if (document.body.classList.contains('modal-open')) return;   // overlay de configurações aberto
+            if (document.body.classList.contains('modal-open')) return;   
             if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
             if (['Enter', ' ', 'ArrowRight'].includes(e.key)) {
                 e.preventDefault();
@@ -73,7 +49,6 @@ class VNEngine {
         });
     }
 
-    /* ------------------------------------------------------------------ DOM */
 
     _build() {
         this.root.classList.add('vn-root');
@@ -102,14 +77,11 @@ class VNEngine {
         this.stage.addEventListener('click', () => this.next());
     }
 
-    /* --------------------------------------------------------------- eventos */
 
     on(evt, fn) { (this._ev[evt] ||= []).push(fn); return this; }
     emit(evt, ...args) { (this._ev[evt] || []).forEach((fn) => fn(...args)); }
 
-    /* ------------------------------------------------------------- variáveis */
 
-    /** Troca {masculino|feminino}, {avatar} e {nome}. O texto original (no JSON) não muda. */
     fmt(str) {
         if (typeof str !== 'string' || !str.includes('{')) return str;
         const v = this.vars;
@@ -119,13 +91,11 @@ class VNEngine {
             .replace(/\{nome\}/g, v.nome || '');
     }
 
-    /** Índice da 1ª fala marcada com part:2 (ou 0 se a cena não tem parte 2). */
     part2Index(scene = this.scene) {
         const i = (scene?.lines || []).findIndex((l) => Number(l.part) === 2);
         return i < 0 ? 0 : i;
     }
 
-    /* ----------------------------------------------------- carregar / tocar */
 
     async loadScene(slug) {
         const res = await fetch(`${this.sceneUrl}?slug=${encodeURIComponent(slug)}`);
@@ -133,7 +103,6 @@ class VNEngine {
         return res.json();
     }
 
-    /** Toca uma cena (objeto ou slug) do começo (ou de `at`). Substitui a cena atual. */
     async play(sceneOrSlug, { at = 0 } = {}) {
         const scene = typeof sceneOrSlug === 'string' ? await this.loadScene(sceneOrSlug) : sceneOrSlug;
         scene.lines ||= [];
@@ -147,10 +116,7 @@ class VNEngine {
         return scene;
     }
 
-    /**
-     * Insere uma sessão de VN A QUALQUER MOMENTO.
-     * A cena atual (se houver) é pausada e retomada exatamente de onde parou quando a nova terminar.
-     */
+   
     async insertScene(sceneOrSlug) {
         const running = this.scene && !this._ended && !this.root.hidden;
         if (running) {
@@ -164,7 +130,6 @@ class VNEngine {
         }
     }
 
-    /* ------------------------------------------------------------ navegação */
 
     next() {
         if (!this.scene || this._ended) return;
@@ -173,7 +138,6 @@ class VNEngine {
         else this._finish();
     }
 
-    /** Encerra a navegação da cena (usado quando o quiz assume a tela). */
     stop() {
         clearTimeout(this._t);
         this.typing = false;
@@ -184,7 +148,6 @@ class VNEngine {
         if (this.scene && this.index > 0) this.goTo(this.index - 1);
     }
 
-    /** Vai direto para a fala `i` (reconstruindo fundo e personagens). */
     goTo(i, { instant = false } = {}) {
         const n = this.scene.lines.length;
         this.index = n ? Math.max(0, Math.min(i, n - 1)) : -1;
@@ -213,11 +176,10 @@ class VNEngine {
         this.emit('end', finished);
     }
 
-    /* ---------------------------------------------------------------- estado */
 
     _applyLine(line, st) {
         if (line.bg) st.bg = line.bg;
-        if ('popup' in line) {                       // pop-up didático: persiste, avança por patch ou fecha
+        if ('popup' in line) {                       
             const p = line.popup;
             if (!p || p.hide) st.popup = null;
             else if (p.type || !st.popup) st.popup = { ...p };
@@ -281,7 +243,6 @@ class VNEngine {
         for (const [id, el] of this.charEls) if (!seen.has(id)) el.classList.remove('vn-visible');
     }
 
-    /* ------------------------------------------------------------- pop-up */
 
     _renderPopup(p) {
         const box = this.popupEl;
@@ -298,15 +259,14 @@ class VNEngine {
         const same = key === this._popKey && box.classList.contains('on');
         const info = VNPopup.render(box, f, {
             url: (kind, src) => this._url(kind, src),
-            prevStep: same ? this._popStep : 0,         // mesmo pop-up: anima só o passo novo; pop-up novo: anima tudo
+            prevStep: same ? this._popStep : 0,         
         });
         this._popKey = key;
         this._popStep = info.step;
         box.classList.add('on');
-        this.stage.classList.add('has-popup');           // os personagens abrem espaço nas laterais
+        this.stage.classList.add('has-popup');           
     }
 
-    /* -------------------------------------------------------- caixa de texto */
 
     _renderLine(line, instant) {
         clearTimeout(this._t);

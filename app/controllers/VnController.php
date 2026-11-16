@@ -10,7 +10,6 @@ class VnController
         $this->scenes = new VnScene($db);
     }
 
-    /* ---------------------------------------------------------------- GET /vn/scene?slug=... */
 
     public function scene(): void
     {
@@ -33,7 +32,6 @@ class VnController
         ]);
     }
 
-    /* ---------------------------------------------------------------- helpers */
 
     private function cleanSlug(string $slug): string
     {

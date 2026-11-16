@@ -17,12 +17,10 @@ class LevelController
         $userId = $_SESSION['user_id'] ?? null;
         $levels = $this->level->findAll();
 
-        // Busca o progresso do usuário logado
         $userProgressData = $userId
             ? $this->progress->findByUser($userId)
             : [];
 
-        // Mapeia o progresso pelo level_id
         $userProgress = [];
 
         foreach ($userProgressData as $p) {

@@ -2,7 +2,6 @@
 <?php $isLoggedIn = isset($_SESSION['user_id']);
 $arcadeTitle = (require __DIR__ . '/../../../config/quiz.php')['arcade']['title'];
 
-// Modo arcade só libera depois de concluir todos os níveis
 $infiniteUnlocked = $isLoggedIn
     && (new Progress($db))->hasCompletedAll((int) $_SESSION['user_id']);
 

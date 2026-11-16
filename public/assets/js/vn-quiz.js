@@ -1,10 +1,4 @@
-// /public/assets/js/vn-quiz.js
-// Quiz de contas que roda por cima do fundo onde a visual novel terminou.
-//
-// Regras:
-//  - acerto de PRIMEIRA = 1 acerto (hits)
-//  - cada clique errado = 1 erro (errors); a criança tenta de novo a mesma conta
-//  - a conta só passa quando acerta; ao completar `count` contas o nível termina
+
 
 class VNQuiz {
     /**
@@ -41,19 +35,16 @@ class VNQuiz {
         this._last = '';
     }
 
-    /** Esconde o quiz (sem perder o andamento) para mostrar uma cena por cima. */
     pause() {
         this.layer.style.display = 'none';
         this.stage.classList.remove('vn-quiz-mode');
     }
 
-    /** Volta ao quiz do ponto onde parou. */
     resume() {
         this.layer.style.display = '';
         this.stage.classList.add('vn-quiz-mode');
     }
 
-    /** Remove a camada do quiz (usado antes da mensagem final). */
     destroy() {
         this.layer?.remove();
         this.stage.classList.remove('vn-quiz-mode');
@@ -88,7 +79,6 @@ class VNQuiz {
     static SYMBOL = { '+': '+', '-': '−', '*': '×', '/': '÷' };
     static PRAISE = ['certíssimo!', 'muito bem!', 'isso aí!', 'acertou!'];
 
-    /* ------------------------------------------------------------------ UI */
 
     start() {
         this.stage.classList.add('vn-quiz-mode');
@@ -108,7 +98,6 @@ class VNQuiz {
             <button type="button" class="vq-help" hidden>✏️ armar a conta</button>`;
         this.stage.append(layer);
 
-        // ajuda opcional: reabre a cena de armação sem perder o quiz (a criança pode resolver no papel)
         this.helpBtn = layer.querySelector('.vq-help');
         if (this.onHelp) {
             this.helpBtn.hidden = false;
@@ -122,7 +111,6 @@ class VNQuiz {
         this.bubble = layer.querySelector('.vq-bubble');
 
         this.mascotImg = layer.querySelector('.vq-mascot img');
-        // sprite que não existe: esconde só a imagem (o balão continua aparecendo)
         this.mascotImg.addEventListener('error', () => { this.mascotImg.hidden = true; });
         if (this.cfg.mascot) {
             ['happy', 'sad'].forEach((mood) => { new Image().src = this._mascotUrl(mood); });   // pré-carrega
@@ -137,7 +125,6 @@ class VNQuiz {
         return `${this.assetsBase}/chars/${encodeURIComponent(this.cfg.mascot.replace('{mood}', mood))}`;
     }
 
-    /** mood: 'happy' (acertou) | 'sad' (errou) */
     _setMascot(mood) {
         if (!this.cfg.mascot) return;
         this.mascotImg.hidden = false;
@@ -193,10 +180,9 @@ class VNQuiz {
         }, ok ? 1100 : 1400);
     }
 
-    /* ------------------------------------------------------------- conclusão */
 
     _finish() {
-        if (this.helpBtn) this.helpBtn.hidden = true;   // na tela de resultado não há mais o que armar
+        if (this.helpBtn) this.helpBtn.hidden = true;   
         this.card.innerHTML = `
             <div class="vq-title">nível concluído!</div>
             <div class="vq-stats">
@@ -222,18 +208,15 @@ class VNQuiz {
                 status.textContent = 'progresso salvo!';
 
                 if (res?.finale && this.onFinale) {
-                    // acabou de zerar o jogo → segue para a mensagem final
                     go.textContent = 'continuar';
                     go.onclick = () => this.onFinale();
                 } else if (this.onOutro) {
-                    // cena de transição para o próximo nível → depois vai para a tela de níveis
                     go.textContent = 'continuar';
                     go.onclick = () => this.onOutro();
                 } else {
                     go.textContent = 'voltar aos níveis';
                     go.onclick = () => { window.location.href = this.backUrl; };
 
-                    // transição para o próximo nível = redirecionamento para /game?id=N
                     if (res?.next_level_id && this.levelUrl) {
                         actions.querySelector('.vq-next')?.remove();
                         const next = document.createElement('button');
@@ -254,7 +237,6 @@ class VNQuiz {
         save();
     }
 
-    /* --------------------------------------------------------------- contas */
 
     _makeQuestion() {
         const { min, max } = this.cfg;
@@ -279,7 +261,6 @@ class VNQuiz {
         };
     }
 
-    /** 4 alternativas: a certa + 3 números próximos (como no protótipo: 14, 9, 7, 13). */
     _options(answer) {
         const rnd = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
         const set = new Set([answer]);
