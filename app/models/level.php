@@ -1,5 +1,5 @@
-<?php
 
+<?php
 class Level
 {
     private PDO $db;
@@ -7,15 +7,6 @@ class Level
     public function __construct(PDO $db)
     {
         $this->db = $db;
-    }
-
-    public function create(): int
-    {
-        $sql = "INSERT INTO levels DEFAULT VALUES";
-
-        $this->db->exec($sql);
-
-        return (int) $this->db->lastInsertId();
     }
 
     public function findById(int $id): ?array
@@ -41,14 +32,5 @@ class Level
         return $this->db
             ->query($sql)
             ->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function delete(int $id): bool
-    {
-        $sql = "DELETE FROM levels WHERE id = :id";
-
-        $stmt = $this->db->prepare($sql);
-
-        return $stmt->execute([':id' => $id]);
     }
 }

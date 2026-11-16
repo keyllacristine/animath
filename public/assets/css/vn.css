@@ -128,65 +128,6 @@ body.vn-editing .vn-root { padding-right: 400px; }
 
 .vn-fab { position: fixed; right: 16px; bottom: 16px; z-index: 10001; }
 
-/* ---------- painel do editor ---------- */
-.vn-editor {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 380px;
-    z-index: 10000;
-    box-sizing: border-box;
-    padding: 12px;
-    overflow-y: auto;
-    background: var(--bg-main, #fffdfa);
-    border-left: 4px solid var(--purple-dark, #4A154B);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.vn-editor, .vn-editor * { font-size: 1rem; }
-.vn-ed-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
-.vn-ed-head > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.vn-status { font-size: .85rem; color: var(--purple-sub, #8B6B9B); min-height: 1.2em; }
-.vn-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.vn-row .vn-in { flex: 1; min-width: 0; }
-
-.vn-editor input.vn-in,
-.vn-editor select.vn-in,
-.vn-editor textarea.vn-in {
-    box-sizing: border-box;
-    border: 2px solid var(--purple-dark, #4A154B);
-    border-radius: 10px;
-    padding: 6px 8px;
-    font-weight: 400;
-    background: #fff;
-    width: 100%;
-    font-family: inherit;
-}
-
-.vn-list { display: flex; flex-direction: column; gap: 8px; }
-.vn-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 8px;
-    border: 3px solid var(--light-purple, #F0DAFB);
-    border-radius: 14px;
-    background: var(--light-beige, #f8f3ee);
-}
-.vn-card.active { border-color: var(--purple-dark, #4A154B); }
-.vn-card-head { display: flex; gap: 4px; align-items: center; }
-.vn-card-head b { flex: 1; }
-.vn-card summary { cursor: pointer; font-weight: 600; }
-.vn-lbl { display: block; margin: 6px 0 2px; font-size: .85rem; }
-.vn-charrow { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--purple-sub, #8B6B9B); }
-.vn-charrow .vn-mini { grid-column: span 2; }
-
-@media (max-width: 900px) {
-    body.vn-editing .vn-root { padding-right: 0; }
-    .vn-editor { width: 100%; top: auto; height: 55vh; border-left: 0; border-top: 4px solid var(--purple-dark, #4A154B); }
-}
 
 /* ---------- HUD do jogo: voltar (esq.) e configurações (dir.) ---------- */
 .game-hud { position: absolute; inset: 0; z-index: 30; pointer-events: none; }

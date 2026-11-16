@@ -31,7 +31,6 @@ class AuthController
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['avatar'] = $user['avatar'];
-        $_SESSION['role'] = $user['role'];
 
         header('Location: ' . BASE_URL . '/home');
         exit;
@@ -74,7 +73,6 @@ if ($this->user->findByUsername($username)) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['avatar'] = $user['avatar'];
-            $_SESSION['role'] = $user['role'];
 
             header('Location: ' . BASE_URL . '/home');
             exit;

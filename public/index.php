@@ -11,10 +11,7 @@ require_once __DIR__ . '/../app/models/VnScene.php';
 
 require_once __DIR__ . '/../app/controllers/AuthController.php';
 require_once __DIR__ . '/../app/controllers/GameController.php';
-require_once __DIR__ . '/../app/controllers/AdminController.php';
-require_once __DIR__ . '/../app/controllers/UserController.php';
 require_once __DIR__ . '/../app/controllers/LevelController.php';
-require_once __DIR__ . '/../app/controllers/ProgressController.php';
 require_once __DIR__ . '/../app/controllers/ProfileController.php';
 require_once __DIR__ . '/../app/controllers/VnController.php';
 

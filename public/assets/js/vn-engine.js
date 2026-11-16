@@ -32,7 +32,6 @@ class VNEngine {
      * @param {Element}  opts.root        div onde a engine será montada
      * @param {string}   opts.assetsBase  ex.: '/animath/public/assets/img/vn'
      * @param {string}   opts.sceneUrl    endpoint GET  ?slug=...
-     * @param {string}   opts.saveUrl     endpoint POST (só admin)
      * @param {number}   opts.typeSpeed   ms por letra (0 = sem animação)
      * @param {boolean}  opts.overlay     true = cobre a tela toda (modo "pop-up" de qualquer página)
      * @param {boolean}  opts.hideOnEnd   esconde a engine ao terminar (padrão: = overlay)
@@ -42,7 +41,6 @@ class VNEngine {
         this.root = opts.root;
         this.assetsBase = opts.assetsBase;
         this.sceneUrl = opts.sceneUrl;
-        this.saveUrl = opts.saveUrl;
         this.overlay = !!opts.overlay;
         this.hideOnEnd = opts.hideOnEnd ?? this.overlay;
         this.vars = { avatar: 1, gender: 'm', nome: '', ...(opts.vars || {}) };
@@ -314,7 +312,7 @@ class VNEngine {
         clearTimeout(this._t);
         if (!line) {
             this.nameEl.hidden = true;
-            this.textEl.textContent = '(cena vazia — abra o editor ✎ para adicionar falas)';
+            this.textEl.textContent = '(cena vazia)';
             this.typing = false;
             this.nextEl.classList.remove('on');
             return;
@@ -352,85 +350,5 @@ class VNEngine {
         this.nextEl.classList.add('on');
     }
 
-    /* ------------------------------------------- edição em tempo de execução */
-    // Tudo abaixo mexe no JSON da cena e atualiza a tela na hora.
-
-    _changed() { this.emit('change', this.scene); }
-
-    /** Redesenha a fala atual sem reiniciar a animação de digitação. */
-    refresh() {
-        if (!this.scene) return;
-        const n = this.scene.lines.length;
-        this.index = n ? Math.max(0, Math.min(this.index < 0 ? 0 : this.index, n - 1)) : -1;
-        this.state = this._stateUpTo(this.index);
-        this._renderState();
-        this._renderLine(this.scene.lines[this.index], true);
-    }
-
-    addLine(data = {}, at = this.scene.lines.length) {
-        const line = { id: vnUid(), speaker: '', text: '', ...data };
-        this.scene.lines.splice(at, 0, line);
-        if (this.index >= 0 && at <= this.index) this.index++;
-        if (this.index < 0) this.index = 0;
-        this._changed();
-        this.refresh();
-        return line;
-    }
-
-    editLine(i, patch) {
-        Object.assign(this.scene.lines[i], patch);
-        this._changed();
-        this.refresh();
-    }
-
-    removeLine(i) {
-        this.scene.lines.splice(i, 1);
-        if (i < this.index) this.index--;
-        this._changed();
-        this.refresh();
-    }
-
-    moveLine(i, dir) {
-        const j = i + dir;
-        const L = this.scene.lines;
-        if (j < 0 || j >= L.length) return;
-        [L[i], L[j]] = [L[j], L[i]];
-        this._changed();
-        this.refresh();
-    }
-
-    // Atalhos: gravam o comando na fala ATUAL (então ficam salvos no JSON).
-    setBackground(src) { this.editLine(this.index, { bg: src }); }
-    showCharacter(id, src, pos = 'center') {
-        const line = this.scene.lines[this.index];
-        const chars = (line.chars || []).filter((c) => c.id !== id);
-        chars.push({ id, src, pos, show: true });
-        this.editLine(this.index, { chars });
-    }
-    hideCharacter(id) {
-        const line = this.scene.lines[this.index];
-        const chars = (line.chars || []).filter((c) => c.id !== id);
-        chars.push({ id, show: false });
-        this.editLine(this.index, { chars });
-    }
-
-    /* ---------------------------------------------------------------- salvar */
-
-    toJSON() {
-        const { slug, level_id = null, title, lines } = this.scene;
-        return { slug, level_id, title: title || slug, lines };
-    }
-
-    async save() {
-        const res = await fetch(this.saveUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.toJSON()),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
-        return data;
-    }
 }
-
 window.VNEngine = VNEngine;

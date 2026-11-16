@@ -164,10 +164,7 @@ class GameController
     // Admin pode abrir qualquer nível (pra testar).
     private function isUnlocked(int $levelId): bool
     {
-        if (($_SESSION['role'] ?? '') === 'admin') {
-            return true;
-        }
-
+        
         $done = [];
         foreach ($this->progress->findByUser((int) $_SESSION['user_id']) as $p) {
             if (!empty($p['completed'])) {
@@ -190,17 +187,14 @@ class GameController
     }
 
     private function requireArcade()
-    {
-        $this->requireLogin();
+{
+    $this->requireLogin();
 
-        $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
-
-        if (!$isAdmin && !$this->progress->hasCompletedAll((int) $_SESSION['user_id'])) {
-            header('Location: ' . BASE_URL . '/levels');
-            exit;
-        }
+    if (!$this->progress->hasCompletedAll((int) $_SESSION['user_id'])) {
+        header('Location: ' . BASE_URL . '/levels');
+        exit;
     }
-
+}
     private function requireLogin()
     {
         if (!isset($_SESSION['user_id'])) {

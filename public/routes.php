@@ -76,91 +76,10 @@ switch (true) {
         (new LevelController($db))->index();
         break;
 
-    // ADMIN
-
-    case $path === '/admin':
-        (new AdminController($db))->index();
-        break;
-
-
-    // TESTE DO BANCO
-
-    case $path === '/admin/test':
-        (new AdminController($db))->test();
-        break;
-
-    case $path === '/admin/test/user/create' && $method === 'POST':
-        (new AdminController($db))->testCreateUser();
-        break;
-
-    case $path === '/admin/test/level/create' && $method === 'POST':
-        (new AdminController($db))->testCreateLevel();
-        break;
-
-
-    // ADMIN USERS
-
-    case $path === '/admin/users':
-        (new UserController($db))->index();
-        break;
-
-    case $path === '/admin/users/create':
-        (new UserController($db))->create();
-        break;
-
-    case $path === '/admin/users/edit':
-        (new UserController($db))->edit();
-        break;
-
-    case $path === '/admin/users/delete' && $method === 'POST':
-        (new UserController($db))->delete();
-        break;
-
-
-    // ADMIN LEVELS
-
-    case $path === '/admin/levels':
-        (new LevelController($db))->index();
-        break;
-
-    case $path === '/admin/levels/create':
-        (new LevelController($db))->create();
-        break;
-
-    case $path === '/admin/levels/delete' && $method === 'POST':
-        (new LevelController($db))->delete();
-        break;
-
-
-    // ADMIN PROGRESS
-
-    case $path === '/admin/progress':
-        (new ProgressController($db))->index();
-        break;
-
-    case $path === '/admin/progress/edit':
-        (new ProgressController($db))->edit();
-        break;
-
-    case $path === '/admin/progress/delete' && $method === 'POST':
-        (new ProgressController($db))->delete();
-        break;
-
+    
     // VISUAL NOVEL
     case $path === '/vn/scene':
         (new VnController($db))->scene();
-        break;
-
-    case $path === '/vn/save' && $method === 'POST':
-        (new VnController($db))->save();
-        break;
-
-    case $path === '/vn/assets':
-        (new VnController($db))->assets();
-        break;
-
-    case $path === '/vn/upload' && $method === 'POST':
-        (new VnController($db))->upload();
         break;
 
     default:
