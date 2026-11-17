@@ -83,6 +83,10 @@ input{
     margin-bottom: 20px;
 }
 
+.logo-naologado{
+    width: 20%;
+}
+
 .container.logado {
     min-height: 100vh;
     display: flex;

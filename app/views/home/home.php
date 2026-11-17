@@ -55,7 +55,7 @@ $bgImage = $isLoggedIn
 
 <?php else: ?>
 <div class="container nao-logado">
-    <img class="logo" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
+    <img class="logo-naologado" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
     <nav class="nav nao-logado">
         <div>
             <a href="<?= BASE_URL ?>/register">
