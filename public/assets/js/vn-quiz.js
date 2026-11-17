@@ -95,7 +95,7 @@ class VNQuiz {
                 <div class="vq-bubble"></div>
                 <img alt="">
             </div>
-            <button type="button" class="vq-help" hidden>✏️ armar a conta</button>`;
+            <button type="button" class="vq-help" hidden> <i class="bi bi-pencil-fill"></i> armar a conta</button>`;
         this.stage.append(layer);
 
         this.helpBtn = layer.querySelector('.vq-help');

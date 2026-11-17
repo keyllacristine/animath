@@ -5,7 +5,7 @@
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-back" title="Voltar">
             <i class="bi bi-reply-fill"></i>
         </a>
-            <h2 class="dev-title">desenvolvedores <span class="icon-title"><i class="bi bi-code-slash"></i></span></h2>
+            <h2 class="dev-title">desenvolvedores </h2>
 
     </div>
 

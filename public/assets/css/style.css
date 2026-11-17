@@ -705,12 +705,15 @@ input[type="range"].custom-slider::-moz-range-thumb {
 /* Container da Página de Níveis */
 .level-select-page {
     max-width: 1050px;
+    height: fit-content;
     margin: 0 auto;
     padding: 20px;
+    align-items: center;
 }
 
 /* Cabeçalho superior */
 .level-header {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
