@@ -6,7 +6,7 @@
   --light-purple: #D176F1;  
   --light-cyan: #A5F0FA;
   --light-orange: #F8B17A;      
-  --light-beige: #fffdf2;          
+  --light-beige: #fffdfa;          
 
   --bg-main: #fffdfa;           
 }
@@ -32,6 +32,7 @@ button{
     font-weight: bold;
     transition: transform 0.1;
     width: fit-content;
+    background-color: var(--light-beige);
 }
 
 button:hover{
@@ -78,7 +79,8 @@ input{
 }
 
 .logo{
-    width: 350px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .container.logado {
@@ -115,7 +117,7 @@ input{
 .header-logado {
     width: 95%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;   /* engrenagem no canto direito */
     align-items: center;
     margin-bottom: 25px;
 }
@@ -173,63 +175,40 @@ section.profile{
 
 /* FORMULÁRIO DE LOGIN*/
 
-.container.login{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    height:100vh;
-}
-
-.form.login{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    width: fit-content;
-    height: fit-content;
-    padding-top:20px;
-    padding-bottom:40px;
-    padding-left: 40px;
-}
-
 form.login{
-    display: flex;
-    flex-direction: row;
     width: fit-content;
 }
 
 fieldset.login{
-    padding: 60px;
-    height: 100%;
+    padding: 40px 60px;
 }
 
-.login-art{
-    width: 550px;
-    margin: 40px;
-}
-
-.login-header{
-    margin-top: 10px;
+.login-layout{
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 90%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
 }
 
-/*FORMULÁRIO DE REGISTRO*/
+.login-fields{
+    display: flex;
+    flex-direction: column;
+}
 
-.container.register{
+.login-side{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 50px;
-    width: 100%;
+    gap: 24px;
 }
+
+.login-art{
+    width: min(100%, 380px);
+    margin: 0;
+}
+
+/*FORMULÁRIO DE REGISTRO*/
 
 .form.register{
     display: flex;
@@ -327,7 +306,6 @@ a:active, a.hint.register:active{
     border: 6px solid var(--purple-dark);
     border-radius: 35px;
     padding: 30px;
-    background-color: #fff;
     display: flex;
     flex-direction: column;
 }
@@ -705,10 +683,12 @@ input[type="range"].custom-slider::-moz-range-thumb {
 /* Container da Página de Níveis */
 .level-select-page {
     max-width: 1050px;
-    height: fit-content;
+    min-height: 100vh;
     margin: 0 auto;
     padding: 20px;
-    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Cabeçalho superior */
@@ -753,6 +733,11 @@ input[type="range"].custom-slider::-moz-range-thumb {
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 35px;
+}
+
+.progress-section {
+    width: 100%;
+    margin-top: 10px;
 }
 
 .level-card-wrapper {
@@ -1052,3 +1037,149 @@ input[type="range"].custom-slider::-moz-range-thumb {
 
 
 button.btn-circle { padding: 0; cursor: pointer; font-family: inherit; }
+
+/* ===== LAYOUT PADRÃO DAS PÁGINAS (login, cadastro, perfil, níveis) ===== */
+.page-shell {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ocupa o espaço restante e centraliza o conteúdo na vertical */
+.page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.page-content > .levels-grid,
+.page-content > .progress-section,
+.page-content > .profile-container,
+.page-content > .bottom-bar {
+    width: 100%;
+}
+
+.page-content > form.register {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+/* espaçador que equilibra o cabeçalho quando não há botão de engrenagem */
+.header-spacer {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.page-content > .settings-container {
+    width: 100%;
+    margin-top: 0;
+}
+
+.page-content > .devs-grid {
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* ===== LOGIN / CADASTRO: logo + botão dentro do fieldset, à direita ===== */
+.auth-fieldset-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.auth-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.auth-side .login-art {
+    width: 280px;
+    max-width: 100%;
+    margin: 0;
+}
+
+fieldset.login {
+    padding: 50px;
+}
+
+fieldset.register {
+    padding: 50px;
+}
+
+.avatar-heading {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* colunas de login/cadastro sempre lado a lado (só quebram em telas bem estreitas) */
+.auth-fieldset-body {
+    align-items: flex-start;
+}
+
+.auth-side {
+    align-self: center;
+}
+
+/* ===== AJUSTE FINAL: duas colunas sempre lado a lado ===== */
+.auth-fieldset-body {
+    flex-wrap: nowrap;          /* não deixa a logo cair para baixo */
+}
+
+.auth-fields {
+    flex: 1 1 auto;
+    min-width: 0;               /* permite o texto da dica quebrar linha se faltar espaço */
+}
+
+.auth-fields .avatar-selection {
+    justify-content: flex-start;
+}
+
+.auth-side {
+    flex: 0 0 auto;
+}
+
+.auth-side .btn {
+    white-space: nowrap;
+}
+
+/* só em telas estreitas (celular) empilha as colunas */
+@media (max-width: 900px) {
+    .auth-fieldset-body {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* cadastro: coluna direita com avatares + botão */
+.auth-side .avatar-heading {
+    margin: 0;
+}
+
+/* botão fixo no mesmo canto da engrenagem da home (canto superior direito) */
+.btn-corner {
+    position: fixed;
+    top: 125px;
+    right: calc(5vw - 2.5px);
+    z-index: 10;
+}

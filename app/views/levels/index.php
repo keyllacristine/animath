@@ -1,7 +1,7 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
-<main class="level-select-page">
-    <div class="level-header">
+<main class="page-shell">
+    <div class="page-header">
         <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
                         <i class="bi bi-reply-fill"></i>
         </a>
@@ -45,6 +45,7 @@
     $completedCount = 0;
     ?>
 
+    <div class="page-content">
     <div class="levels-grid">
         <?php 
         $previousCompleted = true; 
@@ -108,6 +109,7 @@
         <div class="progress-bar-container">
             <div class="progress-bar-fill <?= $gameDone ? 'done' : '' ?>" style="width: <?= $overallProgress ?>%;"></div>
         </div>
+    </div>
     </div>
 </main>
 

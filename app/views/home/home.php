@@ -22,12 +22,13 @@ $bgImage = $isLoggedIn
 <?php if ($isLoggedIn): ?>
 <div class="container logado">
     <header class="header-logado">
-    <img class="logo" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-settings" title="Configurações">
             <span class="icon-gear"><i class="bi bi-gear-fill"></i></span>
         </a>
     </header>
     <div class="sidebar-logado">
+            <img class="logo" src="<?= BASE_URL ?>/assets/img/animath_logo.png" alt="Logo do site">
+
         <nav class="nav logado">
             <div>
                 <a href="<?= BASE_URL ?>/levels">
@@ -63,7 +64,7 @@ $bgImage = $isLoggedIn
         </div>
         <div>
             <a href="<?= BASE_URL ?>/login">
-                <button type="button">já tenho um perfil ➔</button>
+                <button type="button" class="btn-login">já tenho um perfil ➔</button>
             </a>
         </div>
     </nav>

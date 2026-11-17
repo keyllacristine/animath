@@ -1,12 +1,16 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
-<main class="profile-page">
-    <div class="top-bar">
-        <a href="<?= BASE_URL ?>/home" class="btn-back">
+<main class="page-shell">
+    <header class="page-header">
+        <a href="<?= BASE_URL ?>/home" class="btn-circle btn-back" title="Voltar">
             <i class="bi bi-reply-fill"></i>
         </a>
-    </div>
+        <button type="button" class="btn-circle btn-settings" title="Configurações" aria-label="Abrir configurações" onclick="window.openSettings()">
+            <i class="bi bi-gear-fill"></i>
+        </button>
+    </header>
 
+    <div class="page-content">
     <div class="profile-container">
         
         <section class="card-section">
@@ -69,10 +73,11 @@
 
     </div>
 
-    <div class="bottom-bar">
-        <a href="<?= BASE_URL ?>/logout" class="btn-logout">
-            sair da conta <i class="bi bi-box-arrow-right"></i>
-        </a>
+        <div class="bottom-bar">
+            <a href="<?= BASE_URL ?>/logout" class="btn-logout">
+                sair da conta <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
     </div>
 </main>
 
@@ -84,4 +89,5 @@
     });
 </script>
 
+<?php include __DIR__ . '/../settings/_overlay.php'; ?>
 <?php include __DIR__ . '/../footer.php'; ?>

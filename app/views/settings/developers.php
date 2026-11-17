@@ -1,13 +1,13 @@
 <?php include __DIR__ . '/../header.php'; ?>
 
-<main class="developers-page">
-    <div class="top-bar">
+<main class="page-shell">
+    <header class="page-header">
         <a href="<?= BASE_URL ?>/settings" class="btn-circle btn-back" title="Voltar">
             <i class="bi bi-reply-fill"></i>
         </a>
-            <h2 class="dev-title">desenvolvedores </h2>
-
-    </div>
+        <h1 class="page-title">desenvolvedores</h1>
+        <span class="header-spacer" aria-hidden="true"></span>
+    </header>
 
     <?php 
     $developers = [
@@ -19,16 +19,19 @@
         ['img' => 'dev6.JPEG', 'name' => 'evilly', 'role' => "documentação \nbanco de dados"],
     ];
     ?>
-    <div class="devs-grid">
-        <?php foreach ($developers as $dev): ?>
-            <article class="dev-card">
-                <div class="dev-avatar">
-                    <img src="<?= BASE_URL ?>/assets/img/devs2/<?= htmlspecialchars($dev['img']) ?>" alt="<?= htmlspecialchars($dev['name']) ?>">
-                </div>
-                <h3 class="dev-name"><?= htmlspecialchars($dev['name']) ?></h3>
-                <p class="dev-role"><?= nl2br(htmlspecialchars($dev['role'])) ?></p>
-            </article>
-        <?php endforeach; ?>
+
+    <div class="page-content">
+        <div class="devs-grid">
+            <?php foreach ($developers as $dev): ?>
+                <article class="dev-card">
+                    <div class="dev-avatar">
+                        <img src="<?= BASE_URL ?>/assets/img/devs2/<?= htmlspecialchars($dev['img']) ?>" alt="<?= htmlspecialchars($dev['name']) ?>">
+                    </div>
+                    <h3 class="dev-name"><?= htmlspecialchars($dev['name']) ?></h3>
+                    <p class="dev-role"><?= nl2br(htmlspecialchars($dev['role'])) ?></p>
+                </article>
+            <?php endforeach; ?>
+        </div>
     </div>
 </main>
 
